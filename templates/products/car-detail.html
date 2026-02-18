@@ -1,0 +1,845 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="breadcrumb-wrap br-4 bg-f">
+    <div class="container">
+        <div class="breadcrumb-title">
+            <h2>{{ car.title }}</h2>
+            <ul class="breadcrumb-menu list-style">
+                <li><a href="/">داشبورد </a></li>
+                <li>معلومات مکمل موتر</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Product Details section start -->
+<style>
+    .product-details-wrap {
+        background: #f8f9fa;
+        padding: 40px 0;
+        font-family: 'Vazirmatn', sans-serif;
+        direction: rtl;
+    }
+
+    .product-detail-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        overflow: hidden;
+        padding: 30px;
+    }
+
+    /* Right Side - Images */
+    .image-side {
+        padding-left: 25px;
+        border-left: 1px solid #edf2f7;
+    }
+
+    .main-image-container {
+        width: 100%;
+        height: 350px;
+        border-radius: 15px;
+        overflow: hidden;
+        margin-bottom: 15px;
+        background: #f1f5f9;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .main-image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .main-image-container img.fade-out {
+        opacity: 0;
+    }
+
+    .main-image-container img.fade-in {
+        opacity: 1;
+    }
+
+    .main-image-container:hover img {
+        transform: scale(1.02);
+    }
+
+    .main-image-container::after {
+        content: '\f0b2';
+        font-family: 'remixicon' !important;
+        position: absolute;
+        bottom: 15px;
+        left: 15px;
+        background: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #1a2639;
+        font-size: 20px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+
+    .main-image-container:hover::after {
+        opacity: 1;
+    }
+
+    /* Loading Spinner */
+    .image-loader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 40px;
+        height: 40px;
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #ff6b6b;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        display: none;
+    }
+
+    .image-loader.active {
+        display: block;
+    }
+
+    @keyframes spin {
+        0% { transform: translate(-50%, -50%) rotate(0deg); }
+        100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    /* Thumbnail Strip */
+    .thumbnail-strip {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        padding: 5px 0 10px;
+    }
+
+    .thumbnail-strip::-webkit-scrollbar {
+        height: 5px;
+    }
+
+    .thumbnail-strip::-webkit-scrollbar-thumb {
+        background: #cbd5e0;
+        border-radius: 5px;
+    }
+
+    .thumbnail-strip::-webkit-scrollbar-thumb:hover {
+        background: #ff6b6b;
+    }
+
+    .thumb-item {
+        min-width: 70px;
+        height: 60px;
+        border-radius: 8px;
+        overflow: hidden;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: all 0.2s ease;
+        opacity: 0.7;
+    }
+
+    .thumb-item.active {
+        border-color: #ff6b6b;
+        opacity: 1;
+        transform: scale(1.05);
+    }
+
+    .thumb-item:hover {
+        opacity: 1;
+    }
+
+    .thumb-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Left Side - Details */
+    .details-side {
+        padding-right: 25px;
+    }
+
+    /* Title Section */
+    .title-section {
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #edf2f7;
+    }
+
+    .title-section h1 {
+        font-size: 26px;
+        font-weight: 700;
+        color: #1a2639;
+        margin-bottom: 10px;
+    }
+
+    .price-tag {
+        display: inline-block;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 8px 20px;
+        border-radius: 30px;
+        font-size: 22px;
+        font-weight: 700;
+    }
+
+    /* Compact Info Grid */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .info-item {
+        background: #f8fafc;
+        padding: 12px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .info-icon {
+        width: 35px;
+        height: 35px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .info-icon i {
+        font-size: 18px;
+        color: #ff6b6b;
+    }
+
+    .info-content {
+        flex: 1;
+    }
+
+    .info-label {
+        font-size: 11px;
+        color: #718096;
+        margin-bottom: 2px;
+    }
+
+    .info-value {
+        font-size: 14px;
+        font-weight: 700;
+        color: #1a2639;
+    }
+
+    /* Details List */
+    .details-list {
+        margin-bottom: 20px;
+    }
+
+    .detail-row {
+        display: flex;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px dashed #e2e8f0;
+    }
+
+    .detail-row:last-child {
+        border-bottom: none;
+    }
+
+    .detail-label {
+        min-width: 100px;
+        font-size: 14px;
+        color: #718096;
+    }
+
+    .detail-value {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1a2639;
+        background: #f7fafc;
+        padding: 4px 12px;
+        border-radius: 20px;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .status-active {
+        background: #c6f6d5;
+        color: #22543d;
+    }
+
+    .status-inactive {
+        background: #fed7d7;
+        color: #742a2a;
+    }
+
+    /* Description */
+    .description-section {
+        margin-bottom: 20px;
+    }
+
+    .description-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1a2639;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .description-title i {
+        color: #ff6b6b;
+    }
+
+    .description-text {
+        background: #f8fafc;
+        padding: 15px;
+        border-radius: 10px;
+        font-size: 14px;
+        line-height: 1.7;
+        color: #4a5568;
+        max-height: 100px;
+        overflow-y: auto;
+    }
+
+    .description-text::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .description-text::-webkit-scrollbar-thumb {
+        background: #cbd5e0;
+        border-radius: 5px;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-primary {
+        flex: 2;
+        background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255,107,107,0.3);
+    }
+
+    .btn-secondary {
+        flex: 1;
+        background: white;
+        color: #1a2639;
+        border: 1px solid #e2e8f0;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-secondary:hover {
+        border-color: #ff6b6b;
+        color: #ff6b6b;
+    }
+
+    /* Zoom Modal */
+    .zoom-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.95);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .zoom-modal.active {
+        display: flex;
+    }
+
+    .zoom-content {
+        position: relative;
+        max-width: 90%;
+        max-height: 90%;
+    }
+
+    .zoom-image {
+        max-width: 100%;
+        max-height: 90vh;
+        object-fit: contain;
+        transition: opacity 0.3s ease;
+    }
+
+    .zoom-close {
+        position: absolute;
+        top: -40px;
+        right: 0;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 30px;
+        cursor: pointer;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .zoom-close:hover {
+        color: #ff6b6b;
+    }
+
+    /* Responsive */
+    @media (max-width: 991px) {
+        .image-side {
+            border-left: none;
+            padding-left: 0;
+            margin-bottom: 25px;
+        }
+        
+        .details-side {
+            padding-right: 0;
+        }
+        
+        .main-image-container {
+            height: 300px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .product-detail-card {
+            padding: 20px;
+        }
+        
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .title-section h1 {
+            font-size: 22px;
+        }
+        
+        .price-tag {
+            font-size: 18px;
+        }
+    }
+</style>
+
+<section class="product-details-wrap">
+    <div class="container">
+        <div class="product-detail-card">
+            <div class="row">
+                <!-- Right Side - Images -->
+                <div class="col-lg-6">
+                    <div class="image-side">
+                        <!-- Main Image -->
+                        <div class="main-image-container" onclick="openZoom(mainImage.src)">
+                            <img src="{{ car.main_image.url }}" alt="{{ car.title }}" id="mainImage">
+                            <div class="image-loader" id="imageLoader"></div>
+                        </div>
+                        
+                        <!-- Thumbnail Strip -->
+                        <div class="thumbnail-strip">
+                            <div class="thumb-item active" onclick="changeMainImageWithEffect('{{ car.main_image.url }}', this)">
+                                <img src="{{ car.main_image.url }}" alt="Main">
+                            </div>
+                            {% for image in car.images.all %}
+                                <div class="thumb-item" onclick="changeMainImageWithEffect('{{ image.image.url }}', this)">
+                                    <img src="{{ image.image.url }}" alt="Thumb">
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Left Side - Details -->
+                <div class="col-lg-6">
+                    <div class="details-side">
+                        <!-- Title & Price -->
+                        <div class="title-section">
+                            <h1>{{ car.title }}</h1>
+                            <span class="price-tag">{{ car.price|floatformat:0 }} </span>
+                        </div>
+                        
+                        <!-- Quick Info Grid -->
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="ri-calendar-line"></i>
+                                </div>
+                                <div class="info-content">
+                                    <div class="info-label">سال ساخت</div>
+                                    <div class="info-value">{{ car.year_of_manufacture }}</div>
+                                </div>
+                            </div>
+                            
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="ri-speed-line"></i>
+                                </div>
+                                <div class="info-content">
+                                    <div class="info-label">کارکرد</div>
+                                    <div class="info-value">{{ car.mileage_km|floatformat:0 }} km</div>
+                                </div>
+                            </div>
+                            
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="ri-engine-line"></i>
+                                </div>
+                                <div class="info-content">
+                                    <div class="info-label">گیربکس</div>
+                                    <div class="info-value">{{ car.get_gearbox_type_display }}</div>
+                                </div>
+                            </div>
+                            
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="ri-gas-station-line"></i>
+                                </div>
+                                <div class="info-content">
+                                    <div class="info-label">سوخت</div>
+                                    <div class="info-value">{{ car.get_fuel_type_display }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Details List -->
+                        <div class="details-list">
+                            <div class="detail-row">
+                                <span class="detail-label">برند/مدل</span>
+                                <span class="detail-value">{{ car.brand_model }}</span>
+                            </div>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">وضعیت</span>
+                                <span class="detail-value">
+                                    {% if car.is_activated %}
+                                        <span class="status-badge status-active">فعال</span>
+                                    {% else %}
+                                        <span class="status-badge status-inactive">غیرفعال</span>
+                                    {% endif %}
+                                </span>
+                            </div>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">تاریخ ثبت</span>
+                                <span class="detail-value">{{ car.created_at|date:"Y/m/d" }}</span>
+                            </div>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">شماره تماس</span>
+                                <span class="detail-value">{{ car.user.get_full_name|default:car.user.username }}</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Description -->
+                        {% if car.description %}
+                        <div class="description-section">
+                            <div class="description-title">
+                                <i class="ri-file-text-line"></i>
+                                <span>توضیحات</span>
+                            </div>
+                            <div class="description-text">
+                                {{ car.description }}
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Action Buttons -->
+                        <div class="action-buttons">
+                            <a href="" class="btn-primary">
+                               <i class="ri-whatsapp-line"></i>
+                               تماس با خریدار از طریق واتساپ
+                            </a>
+                            <a href="" class="btn-secondary">
+                               <i class="ri-share-line"></i>
+                                اشتراک کردن
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Zoom Modal -->
+<div class="zoom-modal" id="zoomModal" onclick="closeZoom(event)">
+    <div class="zoom-content">
+        <button class="zoom-close" onclick="closeZoom(event)">×</button>
+        <img src="" alt="Zoom" class="zoom-image" id="zoomImage">
+    </div>
+</div>
+
+<script>
+// Preload all images
+function preloadImages() {
+    const images = [
+        '{{ car.main_image.url }}',
+        {% for image in car.images.all %}
+            '{{ image.image.url }}',
+        {% endfor %}
+    ];
+    
+    images.forEach(src => {
+        const img = new Image();
+        img.src = src;
+    });
+}
+
+// Call preload on page load
+window.addEventListener('load', preloadImages);
+
+function changeMainImageWithEffect(imageUrl, element) {
+    const mainImage = document.getElementById('mainImage');
+    const loader = document.getElementById('imageLoader');
+    
+    // Don't do anything if it's the same image
+    if (mainImage.src === imageUrl) {
+        return;
+    }
+    
+    // Remove active class from all thumbnails
+    document.querySelectorAll('.thumb-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    // Add active class to clicked thumbnail
+    element.classList.add('active');
+    
+    // Show loader
+    loader.classList.add('active');
+    
+    // Fade out current image
+    mainImage.classList.add('fade-out');
+    
+    // Create new image object to preload
+    const newImage = new Image();
+    newImage.src = imageUrl;
+    
+    // When new image is loaded
+    newImage.onload = function() {
+        // Change the source
+        mainImage.src = imageUrl;
+        
+        // Small delay to ensure src change
+        setTimeout(() => {
+            // Fade in new image
+            mainImage.classList.remove('fade-out');
+            mainImage.classList.add('fade-in');
+            
+            // Hide loader
+            loader.classList.remove('active');
+            
+            // Remove fade-in class after animation
+            setTimeout(() => {
+                mainImage.classList.remove('fade-in');
+            }, 300);
+        }, 50);
+    };
+    
+    // Handle error
+    newImage.onerror = function() {
+        console.error('Failed to load image:', imageUrl);
+        loader.classList.remove('active');
+        mainImage.classList.remove('fade-out');
+    };
+}
+
+function openZoom(imageUrl) {
+    const zoomImage = document.getElementById('zoomImage');
+    zoomImage.style.opacity = '0';
+    zoomImage.src = imageUrl;
+    
+    // Fade in zoom image
+    setTimeout(() => {
+        zoomImage.style.opacity = '1';
+    }, 50);
+    
+    document.getElementById('zoomModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeZoom(event) {
+    const modal = document.getElementById('zoomModal');
+    if (event.target === modal || event.target.classList.contains('zoom-close')) {
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// Close with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('zoomModal');
+        if (modal.classList.contains('active')) {
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+    }
+});
+
+// Keyboard navigation for thumbnails (optional)
+document.addEventListener('keydown', function(e) {
+    const activeThumb = document.querySelector('.thumb-item.active');
+    const allThumbs = document.querySelectorAll('.thumb-item');
+    const currentIndex = Array.from(allThumbs).indexOf(activeThumb);
+    
+    if (e.key === 'ArrowRight' && currentIndex < allThumbs.length - 1) {
+        // Next image
+        allThumbs[currentIndex + 1].click();
+    } else if (e.key === 'ArrowLeft' && currentIndex > 0) {
+        // Previous image
+        allThumbs[currentIndex - 1].click();
+    }
+});
+</script>
+<!-- Product Details section end -->
+
+<!-- Product Section Start -->
+<div class="product-wrap ptb-100">
+    <div class="container">
+        <div class="section-title-two text-center mb-30">
+            <h3>Related Products</h3>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-xl-4 col-lg-6 col-md-6">
+                <div class="product-card-three">
+                    <div class="product-img">
+                        <img src="{% static 'assets/img/product/product-15.webp' %}" alt="Image">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-cat-wrap">
+                            <a href="listings.html" class="product-category">Crossover</a>
+                            <div class="product-price">Price: $62000</div>
+                        </div>
+                        <h3><a href="listing-details.html">Audi Trone Electric Sport</a></h3>
+                        <p class="product-address"><i class="flaticon-placeholder"></i> 64, 1st Aveneu, High Steet, UK
+                        </p>
+                        <ul class="product-amenity list-style">
+                            <li><i class="flaticon-settings"></i> Autometic</li>
+                            <li><i class="flaticon-gas-station"></i>FWD</li>
+                            <li><i class="flaticon-speedometer"></i>1300(Mi)</li>
+                        </ul>
+                        <div class="product-action-two">
+                            <a href="listing-details.html" class="btn-one">Add To Cart</a>
+                            <a href="wishlist.html" class="add-to-wishlist"><i class="flaticon-heart"></i></a>
+                            <a href="compare.html" class="add-to-wishlist"><i class="flaticon-compare"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-lg-6 col-md-6">
+                <div class="product-card-three">
+                    <div class="product-img">
+                        <img src="{% static 'assets/img/product/product-16.webp' %}" alt="Image">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-cat-wrap">
+                            <a href="listings.html" class="product-category">Convertible</a>
+                            <div class="product-price">Price: $54000</div>
+                        </div>
+                        <h3><a href="listing-details.html">BMW Electric Model i4</a></h3>
+                        <p class="product-address"><i class="flaticon-placeholder"></i> 2276 Hall Place, Texas, USA</p>
+                        <ul class="product-amenity list-style">
+                            <li><i class="flaticon-settings"></i> Autometic</li>
+                            <li><i class="flaticon-gas-station"></i>FWD</li>
+                            <li><i class="flaticon-speedometer"></i>1300(Mi)</li>
+                        </ul>
+                        <div class="product-action-two">
+                            <a href="listing-details.html" class="btn-one">Add To Cart</a>
+                            <a href="wishlist.html" class="add-to-wishlist"><i class="flaticon-heart"></i></a>
+                            <a href="compare.html" class="add-to-wishlist"><i class="flaticon-compare"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-lg-6 col-md-6">
+                <div class="product-card-three">
+                    <div class="product-img">
+                        <img src="{% static 'assets/img/product/product-17.webp' %}" alt="Image">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-cat-wrap">
+                            <a href="listings.html" class="product-category">Wagon</a>
+                            <div class="product-price">Price: $67000</div>
+                        </div>
+                        <h3><a href="listing-details.html">New 2022 Lexus RC4</a></h3>
+                        <p class="product-address"><i class="flaticon-placeholder"></i>47 Bt. Brothers Road, Nt. Street,
+                            USA</p>
+                        <ul class="product-amenity list-style">
+                            <li><i class="flaticon-settings"></i> Autometic</li>
+                            <li><i class="flaticon-gas-station"></i>FWD</li>
+                            <li><i class="flaticon-speedometer"></i>1300(Mi)</li>
+                        </ul>
+                        <div class="product-action-two">
+                            <a href="listing-details.html" class="btn-one">Add To Cart</a>
+                            <a href="wishlist.html" class="add-to-wishlist"><i class="flaticon-heart"></i></a>
+                            <a href="compare.html" class="add-to-wishlist"><i class="flaticon-compare"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Product Section End -->
+
+
+<div class="paginacontainer">
+    <div class="progress-wrap bounce">
+        <svg class="progress-circle svg-content" width="100%" height="100%" viewbox="-1 -1 102 102">
+            <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"></path>
+        </svg>
+    </div>
+</div>
+
+{% endblock %}

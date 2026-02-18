@@ -376,11 +376,11 @@
             
             <div class="row">
                 <div class="col-lg-6">
-                    <div class="app-content">
+                    <div class="app-content" style="font-family: 'Vazirmatn', sans-serif;">
                         <div class="content-title-two">
-                            <span>{% trans "Welcome" %}</span>
-                            <h3>{% trans "Create Your Account" %}</h3>
-                            <p>{% trans "Join our community and get access to exclusive features" %}</p>
+                            <span>خوش آمدید</span>
+                            <h3>ساخت حساب کاربری</h3>
+                            <p>به جامعه ما بپیوندید و به امکانات ویژه دسترسی پیدا کنید</p>
                         </div>
                         
                         <!-- Sign Up Form -->
@@ -406,7 +406,7 @@
                                 {{ redirect_field }}
                                 
                                 <button type="submit" class="btn btn-primary btn-block">
-                                    {% trans "Sign Up" %}
+                                    ثبت نام
                                 </button>
                             </form>
                         {% endif %}
@@ -414,16 +414,14 @@
                         {% if PASSKEY_SIGNUP_ENABLED %}
                             <hr>
                             <a href="{{ signup_by_passkey_url }}" class="btn btn-outline-primary btn-block">
-                                {% trans "Sign up using a passkey" %}
+                                ثبت نام با استفاده از کلید عبور
                             </a>
                         {% endif %}
 
                         <div class="login-link text-center">
                             <p>
-                                {% blocktranslate %}
-                                Already have an account? 
-                                <a href="{{ login_url }}" class="text-primary">Sign in</a>
-                                {% endblocktranslate %}
+                                قبلاً حساب کاربری دارید؟ 
+                                <a href="{{ login_url }}" class="text-primary">وارد شوید</a>
                             </p>
                         </div>
                     </div>

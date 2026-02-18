@@ -1,83 +1,552 @@
-{% extends "account/base_manage_email.html" %}
-{% load static allauth i18n %}
+{% extends 'base.html' %}
+{% load static %}
+{% load allauth i18n %}
+
 {% block head_title %}
-    {% trans "Email Addresses" %}
+    ایمیل‌های من
 {% endblock head_title %}
+
 {% block content %}
-    {% element h1 %}
-        {% trans "Email Addresses" %}
-    {% endelement %}
-    {% if emailaddresses %}
-        {% element p %}
-            {% trans 'The following email addresses are associated with your account:' %}
-        {% endelement %}
-        {% url 'account_email' as email_url %}
-        {% element form form=form action=email_url method="post" tags="email,list" %}
-            {% slot body %}
-                {% csrf_token %}
-                {% for radio in emailaddress_radios %}
-                    {% with emailaddress=radio.emailaddress %}
-                        {% element field type="radio" checked=radio.checked name="email" value=emailaddress.email id=radio.id %}
-                            {% slot label %}
-                                {{ emailaddress.email }}
-                                {% if emailaddress.verified %}
-                                    {% element badge tags="success,email,verified" %}
-                                        {% translate "Verified" %}
-                                    {% endelement %}
-                                {% else %}
-                                    {% element badge tags="warning,email,unverified" %}
-                                        {% translate "Unverified" %}
-                                    {% endelement %}
-                                {% endif %}
-                                {% if emailaddress.primary %}
-                                    {% element badge tags="email,primary" %}
-                                        {% translate "Primary" %}
-                                    {% endelement %}
-                                {% endif %}
-                            {% endslot %}
-                        {% endelement %}
-                    {% endwith %}
-                {% endfor %}
-            {% endslot %}
-            {% slot actions %}
-                {% element button type="submit" name="action_primary" %}
-                    {% trans 'Make Primary' %}
-                {% endelement %}
-                {% element button tags="secondary" type="submit" name="action_send" %}
-                    {% trans 'Re-send Verification' %}
-                {% endelement %}
-                {% element button tags="danger,delete" type="submit" name="action_remove" %}
-                    {% trans 'Remove' %}
-                {% endelement %}
-            {% endslot %}
-        {% endelement %}
-    {% else %}
-        {% include "account/snippets/warn_no_email.html" %}
-    {% endif %}
-    {% if can_add_email %}
-        {% element h2 %}
-            {% trans "Add Email Address" %}
-        {% endelement %}
-        {% url 'account_email' as action_url %}
-        {% element form form=form method="post" action=action_url tags="email,add" %}
-            {% slot body %}
-                {% csrf_token %}
-                {% element fields form=form %}
-                {% endelement %}
-            {% endslot %}
-            {% slot actions %}
-                {% element button name="action_add" type="submit" %}
-                    {% trans "Add Email" %}
-                {% endelement %}
-            {% endslot %}
-        {% endelement %}
-    {% endif %}
-{% endblock content %}
-{% block extra_body %}
-    <script src="{% static 'account/js/account.js' %}"></script>
-    <script src="{% static 'account/js/onload.js' %}"></script>
-    <script data-allauth-onload="allauth.account.forms.manageEmailForm" type="application/json">{
-    "i18n": {"confirmDelete": "{% trans 'Do you really want to remove the selected email address?' %}"}
+<style>
+    /* Hide header and footer */
+    header, footer, .main-header, .site-header, .main-footer, .site-footer {
+        display: none !important;
+    }
+    
+    /* Center the content with black/golden theme */
+    body {
+        background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+        font-family: 'Vazirmatn', 'Tahoma', sans-serif;
+    }
+    
+    .email-wrap {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 0;
+    }
+    
+    .email-box {
+        position: relative;
+        overflow: hidden;
+        border-radius: 20px;
+        box-shadow: 0 20px 50px rgba(255, 215, 0, 0.15);
+        max-width: 650px;
+        margin: 0 auto;
+        background: #111;
+        border: 1px solid rgba(255, 215, 0, 0.2);
+    }
+    
+    /* Decorative elements */
+    .email-shape-one,
+    .email-shape-two {
+        position: absolute;
+        opacity: 0.05;
+        pointer-events: none;
+    }
+    
+    .email-shape-one {
+        top: -50px;
+        left: -50px;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(circle, #ffd700 0%, transparent 70%);
+        border-radius: 50%;
+    }
+    
+    .email-shape-two {
+        bottom: -50px;
+        right: -50px;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, #ffd700 0%, transparent 70%);
+        border-radius: 50%;
+    }
+    
+    .row {
+        justify-content: center;
+    }
+    
+    .col-lg-8 {
+        flex: 0 0 100%;
+        max-width: 550px;
+        margin: 0 auto;
+    }
+    
+    .email-content {
+        padding: 50px 40px;
+        text-align: center;
+        position: relative;
+        z-index: 2;
+    }
+    
+    /* Email Icon */
+    .email-icon {
+        margin-bottom: 30px;
+    }
+    
+    .email-icon svg {
+        width: 80px;
+        height: 80px;
+        color: #ffd700;
+        filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.3));
+    }
+    
+    .content-title {
+        margin-bottom: 30px;
+    }
+    
+    .content-title span {
+        color: #ffd700;
+        font-size: 16px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        display: block;
+        margin-bottom: 15px;
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    }
+    
+    .content-title h2 {
+        font-size: 36px;
+        font-weight: 700;
+        margin: 0 0 20px;
+        color: #ffd700;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        letter-spacing: 1px;
+    }
+    
+    .content-title h2::after {
+        content: '';
+        display: block;
+        width: 80px;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, #ffd700, transparent);
+        margin: 20px auto 0;
+    }
+    
+    /* Info Box */
+    .info-box {
+        background: rgba(255, 215, 0, 0.05);
+        border: 1px solid rgba(255, 215, 0, 0.2);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 30px;
+        text-align: right;
+    }
+    
+    .info-box p {
+        color: #999;
+        font-size: 14px;
+        margin: 0;
+        line-height: 1.6;
+    }
+    
+    .info-box i {
+        color: #ffd700;
+        font-style: normal;
+        font-weight: 600;
+    }
+    
+    /* Email List Styles */
+    .email-list {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 30px;
+        text-align: right;
+    }
+    
+    .email-item {
+        background: #1a1a1a;
+        border: 1px solid #333;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 12px;
+        transition: all 0.3s ease;
+    }
+    
+    .email-item:hover {
+        border-color: #ffd700;
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.1);
+    }
+    
+    .email-radio {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+    }
+    
+    .email-radio input[type="radio"] {
+        width: 18px;
+        height: 18px;
+        accent-color: #ffd700;
+        cursor: pointer;
+    }
+    
+    .email-details {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .email-address {
+        color: #fff;
+        font-size: 15px;
+        font-weight: 500;
+    }
+    
+    /* Badge Styles */
+    .badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        margin: 0 4px;
+    }
+    
+    .badge-success {
+        background: rgba(0, 200, 81, 0.15);
+        color: #00C851;
+        border: 1px solid rgba(0, 200, 81, 0.3);
+    }
+    
+    .badge-warning {
+        background: rgba(255, 187, 51, 0.15);
+        color: #ffbb33;
+        border: 1px solid rgba(255, 187, 51, 0.3);
+    }
+    
+    .badge-primary {
+        background: rgba(255, 215, 0, 0.15);
+        color: #ffd700;
+        border: 1px solid rgba(255, 215, 0, 0.3);
+    }
+    
+    .badge-primary::before {
+        content: "★ ";
+        color: #ffd700;
+    }
+    
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin: 25px 0;
+        justify-content: center;
+    }
+    
+    .btn-gold {
+        background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%);
+        color: #000;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(255, 215, 0, 0.2);
+        font-family: 'Vazirmatn', 'Tahoma', sans-serif;
+        flex: 1;
+        min-width: 120px;
+    }
+    
+    .btn-gold:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+        background: linear-gradient(135deg, #ffd700 0%, #daa520 100%);
+    }
+    
+    .btn-secondary {
+        background: transparent;
+        color: #ffd700;
+        border: 2px solid #ffd700;
+        padding: 10px 23px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: 'Vazirmatn', 'Tahoma', sans-serif;
+        flex: 1;
+        min-width: 120px;
+    }
+    
+    .btn-secondary:hover {
+        background: #ffd700;
+        color: #000;
+        transform: translateY(-2px);
+    }
+    
+    .btn-danger {
+        background: transparent;
+        color: #ff6b6b;
+        border: 2px solid #ff6b6b;
+        padding: 10px 23px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: 'Vazirmatn', 'Tahoma', sans-serif;
+        flex: 1;
+        min-width: 120px;
+    }
+    
+    .btn-danger:hover {
+        background: #ff6b6b;
+        color: #000;
+        transform: translateY(-2px);
+    }
+    
+    /* Add Email Section */
+    .add-email-section {
+        margin-top: 30px;
+        padding-top: 30px;
+        border-top: 2px dashed #333;
+        text-align: right;
+    }
+    
+    .add-email-section h3 {
+        color: #ffd700;
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        color: #ffd700;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        display: block;
+    }
+    
+    .form-group input {
+        width: 100%;
+        padding: 14px 18px;
+        border: 2px solid #333;
+        border-radius: 12px;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        background-color: #222;
+        color: #fff;
+        font-family: 'Vazirmatn', 'Tahoma', sans-serif;
+    }
+    
+    .form-group input:focus {
+        outline: none;
+        border-color: #ffd700;
+        background-color: #2a2a2a;
+        box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.1);
+    }
+    
+    .btn-add {
+        background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%);
+        color: #000;
+        border: none;
+        padding: 14px 30px;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        font-family: 'Vazirmatn', 'Tahoma', sans-serif;
+    }
+    
+    .btn-add:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(255, 215, 0, 0.4);
+        background: linear-gradient(135deg, #ffd700 0%, #daa520 100%);
+    }
+    
+    /* Progress circle */
+    .progress-wrap svg path {
+        stroke: #ffd700 !important;
+    }
+    
+    /* RTL Support */
+    .container {
+        direction: rtl;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .email-content {
+            padding: 30px 20px;
+        }
+        
+        .content-title h2 {
+            font-size: 28px;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .btn-gold, .btn-secondary, .btn-danger {
+            width: 100%;
+        }
+        
+        .email-details {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+</style>
+
+<!-- Email Management Section Start -->
+<div class="email-wrap">
+    <div class="container">
+        <div class="email-box">
+            <div class="email-shape-one"></div>
+            <div class="email-shape-two"></div>
+            
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="email-content">
+                        <!-- Email Icon -->
+                        <div class="email-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor"/>
+                                <path d="M22 7L12 13L2 7" stroke="currentColor" stroke-linecap="round"/>
+                                <circle cx="12" cy="13" r="1" fill="#ffd700" stroke="none"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="content-title">
+                            <span>مدیریت ایمیل</span>
+                            <h2>ایمیل‌های من</h2>
+                        </div>
+                        
+                        <div class="info-box">
+                            <p>
+                                <i>📧</i> ایمیل‌های زیر با حساب کاربری شما مرتبط هستند:
+                            </p>
+                        </div>
+                        
+                        {% if emailaddresses %}
+                            <div class="email-list">
+                                {% url 'account_email' as email_url %}
+                                <form method="post" action="{{ email_url }}" class="email-form">
+                                    {% csrf_token %}
+                                    
+                                    {% for radio in emailaddress_radios %}
+                                        {% with emailaddress=radio.emailaddress %}
+                                            <div class="email-item">
+                                                <label class="email-radio">
+                                                    <input type="radio" name="email" value="{{ emailaddress.email }}" id="{{ radio.id }}" {% if radio.checked %}checked{% endif %}>
+                                                    <div class="email-details">
+                                                        <span class="email-address">{{ emailaddress.email }}</span>
+                                                        <div class="badge-container">
+                                                            {% if emailaddress.verified %}
+                                                                <span class="badge badge-success">تایید شده</span>
+                                                            {% else %}
+                                                                <span class="badge badge-warning">تایید نشده</span>
+                                                            {% endif %}
+                                                            {% if emailaddress.primary %}
+                                                                <span class="badge badge-primary">اصلی</span>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        {% endwith %}
+                                    {% endfor %}
+                                    
+                                    <div class="action-buttons">
+                                        <button type="submit" name="action_primary" class="btn-gold">
+                                            انتخاب به عنوان اصلی
+                                        </button>
+                                        <button type="submit" name="action_send" class="btn-secondary">
+                                            ارسال مجدد تاییدیه
+                                        </button>
+                                        <button type="submit" name="action_remove" class="btn-danger" onclick="return confirm('آیا از حذف این ایمیل مطمئن هستید؟')">
+                                            حذف
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        {% else %}
+                            <div class="info-box" style="text-align: center;">
+                                <p>هیچ ایمیلی ثبت نشده است</p>
+                            </div>
+                        {% endif %}
+                        
+                        {% if can_add_email %}
+                            <div class="add-email-section">
+                                <h3>افزودن ایمیل جدید</h3>
+                                {% url 'account_email' as action_url %}
+                                <form method="post" action="{{ action_url }}">
+                                    {% csrf_token %}
+                                    
+                                    {% for field in form %}
+                                        {% if field.name != 'email' %}
+                                            {{ field }}
+                                        {% else %}
+                                            <div class="form-group">
+                                                <label>ایمیل جدید</label>
+                                                <input type="email" name="email" placeholder="example@email.com" required>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                    
+                                    <button type="submit" name="action_add" class="btn-add">
+                                        افزودن ایمیل
+                                    </button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Email Management Section End -->
+
+<!-- Back-to-top button Start -->
+<div class="paginacontainer">	
+    <div class="progress-wrap bounce">
+        <svg class="progress-circle svg-content" width="100%" height="100%" viewbox="-1 -1 102 102">
+            <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98" stroke="#ffd700" stroke-width="4" fill="none"/>
+        </svg>
+    </div>
+</div> 
+<!-- Back-to-top button End -->
+
+<!-- JavaScript for email management -->
+<script src="{% static 'account/js/account.js' %}"></script>
+<script src="{% static 'account/js/onload.js' %}"></script>
+<script data-allauth-onload="allauth.account.forms.manageEmailForm" type="application/json">
+{
+    "i18n": {"confirmDelete": "آیا مطمئن هستید که می‌خواهید این ایمیل را حذف کنید؟"}
 }
-    </script>
-{% endblock extra_body %}
+</script>
+
+<script>
+    // Add confirmation for remove button
+    document.addEventListener('DOMContentLoaded', function() {
+        const removeBtn = document.querySelector('button[name="action_remove"]');
+        if (removeBtn) {
+            removeBtn.addEventListener('click', function(e) {
+                if (!confirm('آیا از حذف این ایمیل مطمئن هستید؟')) {
+                    e.preventDefault();
+                }
+            });
+        }
+    });
+</script>
+{% endblock content %}

@@ -1,0 +1,374 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Breadcrumb Start -->
+<div class="breadcrumb-wrap br-10 bg-f">
+    <div class="container">
+        <div class="breadcrumb-title">
+            <h2>{{ contact_info.title }}</h2>
+            <ul class="breadcrumb-menu list-style">
+                <li><a href="/">داشبورد </a></li>
+                <li>{{ contact_info.title }}</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+<!-- Contact Us section Start -->
+<section class="contact-us-wrap ptb-100">
+    <div class="container">
+        <div class="section-title-two text-center mb-30">
+            {% if contact_info.description %}
+            <p class="mt-2" style="color: #718096;">{{ contact_info.description }}</p>
+            {% endif %}
+        </div>
+        <div class="row">
+            <div class="col-xl-4 col-lg-5 col-md-12">
+                <div class="contact-item-wrap">
+                    <!-- Location -->
+                    <div class="contact-item">
+                        <span class="contact-icon">
+                            <i class="ri-map-pin-line"></i>
+                        </span>
+                        <div class="contact-info">
+                            <h3>آدرس</h3>
+                            <p>{{ contact_info.location }}</p>
+                            {% if contact_info.opening_hours %}
+                            <p style="font-size: 13px; color: #718096; margin-top: 5px;">
+                                <i class="ri-time-line" style="vertical-align: middle;"></i> {{contact_info.opening_hours }}
+                            </p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    {% if contact_info.email %}
+                    <div class="contact-item">
+                        <span class="contact-icon">
+                            <i class="ri-mail-line"></i>
+                        </span>
+                        <div class="contact-info">
+                            <h3>ایمیل</h3>
+                            <a href="mailto:{{ contact_info.email }}">
+                                <i class="ri-mail-send-line" style="margin-left: 5px;"></i> {{ contact_info.email }}
+                            </a>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Phone Numbers -->
+                    <div class="contact-item">
+                        <span class="contact-icon">
+                            <i class="ri-phone-line"></i>
+                        </span>
+                        <div class="contact-info">
+                            <h3>شماره تماس</h3>
+                            <a href="tel:{{ contact_info.phone_number }}">
+                                <i class="ri-phone-fill" style="margin-left: 5px;"></i> {{ contact_info.phone_number }}
+                            </a>
+                            {% if contact_info.phone_number_2 %}
+                            <a href="tel:{{ contact_info.phone_number_2 }}">
+                                <i class="ri-phone-fill" style="margin-left: 5px;"></i> {{ contact_info.phone_number_2}}
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Social/Contact Links -->
+                    {% if contact_info.whatsapp or contact_info.telegram %}
+                    <div class="contact-item">
+                        <span class="contact-icon">
+                            <i class="ri-chat-3-line"></i>
+                        </span>
+                        <div class="contact-info">
+                            <h3>پیام رسان‌ها</h3>
+                            {% if contact_info.whatsapp %}
+                            <a href="https://wa.me/{{ contact_info.whatsapp }}" target="_blank">
+                                <i class="ri-whatsapp-line" style="color: #25D366; margin-left: 5px;"></i> واتساپ: {{contact_info.whatsapp }}
+                            </a>
+                            {% endif %}
+                            {% if contact_info.telegram %}
+                            <a href="https://t.me/{{ contact_info.telegram }}" target="_blank">
+                                <i class="ri-telegram-line" style="color: #0088cc; margin-left: 5px;"></i> تلگرام: {{contact_info.telegram }}
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+
+            <div class="col-xl-8 col-lg-7 col-12">
+                <!-- Google Map - Fixed Version -->
+                {% if contact_info.map_link %}
+                <div class="contact-map mb-4">
+                    <!-- If it's already an embed link -->
+               <iframe src="{{ contact_info.map_link }}" 
+        width="100%" 
+        height="350" 
+        style="border:0; border-radius:15px; box-shadow:0 5px 15px rgba(0,0,0,0.05);" 
+        allowfullscreen="" 
+        loading="lazy">
+</iframe>
+
+
+                </div>
+                {% else %}
+                <!-- Fallback Map using location text -->
+                <div class="contact-map mb-4">
+                    <iframe src="https://www.google.com/maps?q={{ contact_info.location|urlencode }}&output=embed"
+                        width="100%" height="350"
+                        style="border:0; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);"
+                        allowfullscreen="" loading="lazy">
+                    </iframe>
+                </div>
+                {% endif %}
+
+                <!-- Contact Form -->
+                <div class="contact-form">
+                    <form class="form-wrap" method="POST" action="">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <i class="ri-user-line input-icon"></i>
+                                    <input type="text" name="name" placeholder="نام *" id="name" required="">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <i class="ri-phone-line input-icon"></i>
+                                    <input type="text" name="phone_number" id="phone_number" required=""
+                                        placeholder="شماره تماس *">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <i class="ri-mail-line input-icon"></i>
+                                    <input type="email" name="email" id="email" placeholder="ایمیل">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <i class="ri-question-line input-icon"></i>
+                                    <input type="text" name="msg_subject" placeholder="موضوع *" id="msg_subject"
+                                        required="">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group v1">
+                                    <i class="ri-message-line input-icon textarea-icon"></i>
+                                    <textarea name="message" id="message" placeholder="پیام شما ..." cols="30" rows="8"
+                                        required=""></textarea>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <button type="submit" class="btn-two">
+                                    <i class="ri-send-plane-line" style="margin-left: 8px;"></i> ارسال پیام
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Contact Us section End -->
+
+<!-- Add this CSS to match your style -->
+<style>
+    .contact-item-wrap {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        height: 100%;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 20px 0;
+        border-bottom: 1px solid #edf2f7;
+    }
+
+    .contact-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .contact-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #ff6b6b20, #4ecdc420);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: #ff6b6b;
+        flex-shrink: 0;
+    }
+
+    .contact-info h3 {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1a2639;
+        margin-bottom: 8px;
+    }
+
+    .contact-info p {
+        color: #4a5568;
+        margin: 0;
+        line-height: 1.6;
+    }
+
+    .contact-info a {
+        display: block;
+        color: #718096;
+        text-decoration: none;
+        transition: color 0.3s ease;
+        margin-bottom: 5px;
+        font-size: 14px;
+    }
+
+    .contact-info a:hover {
+        color: #ff6b6b;
+    }
+
+    .contact-info a i {
+        font-size: 16px;
+        vertical-align: middle;
+    }
+
+    .contact-form {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .input-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #ff6b6b;
+        font-size: 18px;
+        z-index: 1;
+    }
+
+    .textarea-icon {
+        top: 20px;
+        transform: none;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px 45px 12px 15px;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        font-family: 'Vazirmatn', sans-serif;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        background: #f8fafc;
+    }
+
+    .form-group textarea {
+        padding-top: 15px;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #ff6b6b;
+        box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+        background: white;
+    }
+
+    .btn-two {
+        background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+        color: white;
+        border: none;
+        padding: 14px 35px;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Vazirmatn', sans-serif;
+    }
+
+    .btn-two:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3);
+    }
+
+    .btn-two i {
+        font-size: 18px;
+    }
+
+    /* Map styles */
+    .contact-map {
+        border-radius: 20px;
+        overflow: hidden;
+        background: #f1f5f9;
+        min-height: 350px;
+    }
+
+    /* RTL Support */
+    [dir="rtl"] .contact-item {
+        text-align: right;
+    }
+
+    [dir="rtl"] .contact-info a {
+        text-align: right;
+    }
+
+    [dir="rtl"] .input-icon {
+        right: 15px;
+        left: auto;
+    }
+
+    [dir="rtl"] .form-group input,
+    [dir="rtl"] .form-group textarea {
+        padding: 12px 45px 12px 15px;
+    }
+
+    @media (max-width: 768px) {
+
+        .contact-item-wrap,
+        .contact-form {
+            padding: 20px;
+        }
+
+        .btn-two {
+            width: 100%;
+        }
+    }
+</style>
+<!-- Back-to-top button Start -->
+<div class="paginacontainer">
+    <div class="progress-wrap bounce">
+        <svg class="progress-circle svg-content" width="100%" height="100%" viewbox="-1 -1 102 102">
+            <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"></path>
+        </svg>
+    </div>
+</div>
+<!-- Back-to-top button End -->
+
+{% endblock %}

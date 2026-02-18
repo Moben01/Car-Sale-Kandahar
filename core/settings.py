@@ -32,6 +32,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',   # must be before admin
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -77,6 +79,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                'home.context_processors.contact_info',
             ],
         },
     },
@@ -166,3 +170,31 @@ ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = '/accounts/login/'
 # EMAIL_HOST_USER = 'masisediqi9@gmail.com'
 # EMAIL_HOST_PASSWORD = 'wwwsxijputekfcdp'
 # DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+ACCOUNT_FORMS = {
+    'signup': 'users.forms.MySignupForm',
+    'login': 'users.forms.MyLoginForm',
+}
+
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Admin Panel",
+    "site_header": "My Project Admin",
+    "site_brand": "My Project",
+    "welcome_sign": "Welcome to Admin Panel",
+    "copyright": "My Company",
+
+    "topmenu_links": [
+        {"name": "Home", "url": "/", "permissions": ["auth.view_user"]},
+    ],
+
+    "show_sidebar": True,
+    "navigation_expanded": True,
+}
+
+
+JAZZMIN_SETTINGS = {
+    "site_logo": "static/assets/img/no.png",
+    "login_logo": "static/assets/img/no.png",
+}

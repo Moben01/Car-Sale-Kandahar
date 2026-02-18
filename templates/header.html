@@ -33,33 +33,30 @@
                 <div class="row align-items-center">
                     <div class="col-xl-8 col-lg-9">
                         <div class="header-top-left">
-                            <ul class="contact-info list-style" style="font-family: 'Vazirmatn', sans-serif;">
+                            <ul class="contact-info list-style">
                                 <li>
-                                    <span>شماره تماس:</span><a href="tel:87896744455">878-9674-4455</a>
+                                    <span>شماره تماس:</span><a href="tel:{{ contact_info.phone_number }}">{{ contact_info.phone_number }}</a>
                                 </li>
                                 <li>
-                                   <span>ساعات کاری:</span> دوشنبه تا جمعه : ۹:۰۰ تا ۱۸:۰۰
+                                    <span> ساعات کار:</span>{{ contact_info.opening_hours }}
                                 </li>
                                 <li>
-                                    <span>موقعیت:</span> خیابان بیکری ۲۳، لندن، انگلستان
+                                    <span>موقعیت:</span> {{ contact_info.location }}
                                 </li>
                             </ul>
                         </div>
                     </div>
                     <div class="col-xl-4 col-lg-3">
                         <div class="header-top-right">
-                            <div class="user-menu">
-                                <i class="flaticon-user-1"></i>
-                                {% if user.is_authenticated %}
-                                    <a href="{% url 'account_signup' %}">پروفایل</a>
-                                    <a href="{% url 'account_logout' %}">خروج</a>
+                             <div class="user-menu">
+                                {% if request.user.is_authenticated %}
+                                    <a href="{% url 'users:my_account' request.user.id %}">پروفایل من</a>
                                 {% else %}
-                                    <a href="{% url 'account_login' %}">ورود</a>
-                                    <a href="{% url 'account_signup' %}">ثبت‌نام</a>
+                                    <a href="{% url 'account_login' %}">پروفایل من</a>
                                 {% endif %}
                             </div>
                             <div class="social-link">
-                                <span>ما را دنبال کنید:</span>
+                                <span>دنبال کنید:</span>
                                 <ul class="social-profile list-style">
                                     <li>
                                         <a href="https://facebook.com">
@@ -91,31 +88,19 @@
         <div class="header-bottom">
             <div class="container">
                 <nav class="navbar navbar-expand-md navbar-light">
-                    <a class="navbar-brand" href="index.html">
-                        <img class="logo-light" src="{% static 'assets/img/logo-white.webp' %}" alt="logo">
-                        <img class="logo-dark" src="{% static 'assets/img/logo-white.webp' %}" alt="logo">
+                    <a class="navbar-brand" href="/">
+                        <img class="logo-light" src="{% static 'assets/img/no.png' %}" alt="logo">
+                        <img class="logo-dark" src="{% static 'assets/img/no.png' %}" alt="logo">
                     </a>
                     <div class="collapse navbar-collapse main-menu-wrap" id="navbarSupportedContent">
                         <div class="menu-close d-lg-none">
                             <a href="javascript:void(0)"> <i class="ri-close-line"></i></a>
                         </div>
                         <ul class="navbar-nav me-auto">
-                            <li class="nav-item has-child">
+                            <li class="nav-item">
                                 <a href="#" class="nav-link active">
                                     صفحه اصلی
-                                    <i class="flaticon-down-arrow"></i>
                                 </a>
-                                <ul class="dropdown-menu">
-                                    <li class="nav-item">
-                                        <a href="index.html" class="nav-link active">صفحه اصلی یک</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="index-2.html" class="nav-link">صفحه اصلی دو</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="index-3.html" class="nav-link">صفحه اصلی سه</a>
-                                    </li>
-                                </ul>
                             </li>
                             <li class="nav-item has-child">
                                 <a href="#" class="nav-link">
@@ -283,19 +268,28 @@
                                 </ul>
                             </li>
                             <li class="nav-item">
-                                <a href="contact.html" class="nav-link">تماس</a>
+                                <a href="{% url 'home:contact_us' %}" class="nav-link">تماس</a>
                             </li>
                             <li class="nav-item d-lg-none">
                                 <a href="add-listing.html" class="btn-two">افزودن لیست</a>
                             </li>
                         </ul>
                         <div class="other-options md-none">
-                            <div class="option-item">
-                                <a href="compare.html" class="compare-btn"><span class="sm-text">مقایسه</span><i class="flaticon-compare"></i><span class="cart-count">۱۰</span></a>
-                            </div>
-                            <div class="option-item">
-                                <a class="shopcart" href="cart.html"><span class="sm-text">سبد خرید</span><i class="flaticon-shopping-bag-1"></i><span class="cart-count">۱</span></a>
-                            </div>
+                            {% if user.is_authenticated %}
+                                <div class="option-item">
+                                    <a href="{% url 'users:profile' request.user.id %}" class="compare-btn"><span class="sm-text">موتر های من</span></a>
+                                </div>
+                                <div class="option-item">
+                                    <a class="shopcart" href="{% url 'account_logout' %}"><span class="sm-text">خروج</span></a>
+                                </div>
+                            {% else %}
+                                <div class="option-item">
+                                    <a href="{% url 'account_login' %}" class="compare-btn"><span class="sm-text">ورود</span></a>
+                                </div>
+                                <div class="option-item">
+                                    <a class="shopcart" href="{% url 'account_signup' %}"><span class="sm-text">ثبت‌نام</span></a>
+                                </div>
+                            {% endif %}
                             <div class="option-item">
                                 <a href="{% url 'products:add_listing' %}" class="btn-two">افزودن لیست</a>
                             </div>
@@ -320,7 +314,7 @@
         <div class="sidebar-popup-wrap">
             <button type="button" class="close-popup"> <i class="ri-close-fill"></i> </button>
             <div class="comp-logo">
-                <a href="index.html"> 
+                <a href="/"> 
                     <img src="{% static 'assets/img/logo-white.webp' %}" alt="Image">
                 </a>
             </div>

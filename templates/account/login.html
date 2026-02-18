@@ -390,11 +390,11 @@
             
             <div class="row">
                 <div class="col-lg-6">
-                    <div class="login-content">
+                    <div class="login-content" style="font-family: 'Vazirmatn', sans-serif;">
                         <div class="content-title-two">
-                            <span>{% trans "Welcome Back" %}</span>
-                            <h3>{% trans "Sign In" %}</h3>
-                            <p>{% trans "Access your account and continue your journey" %}</p>
+                            <span>خوش آمدید</span>
+                            <h3>ورود به حساب کاربری</h3>
+                            <p>به حساب کاربری خود وارد شوید و سفر خود را ادامه دهید</p>
                         </div>
                         
                         <!-- Login Form -->
@@ -422,35 +422,26 @@
                                     {% if form.remember %}
                                         <div class="remember-me">
                                             {{ form.remember }}
-                                            <label for="{{ form.remember.id_for_label }}">{% trans "Remember me" %}</label>
+                                            <label for="{{ form.remember.id_for_label }}">مرا به خاطر بسپار</label>
                                         </div>
                                     {% endif %}
                                     <div class="forgot-password">
-                                        <a href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+                                        <a href="{% url 'account_reset_password' %}">رمز عبور را فراموش کرده‌اید؟</a>
                                     </div>
                                 </div>
                                 
                                 {{ redirect_field }}
                                 
                                 <button type="submit" class="btn btn-primary btn-block">
-                                    {% trans "Sign In" %}
+                                    ورود
                                 </button>
                             </form>
                         {% endif %}
 
-                        {% if SOCIALACCOUNT_ENABLED %}
-                            <div class="social-login mt-4">
-                                <p class="text-center">{% trans "Or sign in with" %}</p>
-                                {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
-                            </div>
-                        {% endif %}
-
                         <div class="signup-link text-center">
                             <p>
-                                {% blocktranslate %}
-                                Don't have an account? 
-                                <a href="{{ signup_url }}" class="text-primary">Sign up</a>
-                                {% endblocktranslate %}
+                                حساب کاربری ندارید؟ 
+                                <a href="{{ signup_url }}" class="text-primary">ثبت نام کنید</a>
                             </p>
                         </div>
                     </div>

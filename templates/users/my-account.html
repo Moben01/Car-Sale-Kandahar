@@ -1,0 +1,382 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Breadcrumb Start -->
+<div class="breadcrumb-wrap br-4 bg-f">
+    <div class="container">
+        <div class="breadcrumb-title">
+            <h2> حساب کاربری من</h2>
+            <ul class="breadcrumb-menu list-style">
+                <li><a href="/">داشبورد </a></li>
+                <li> حساب کاربری من</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+
+
+<div class="account-container bg-dark">
+    <div class="account-header text-center mb-4">
+        <p class="account-subtitle text-white-50">مشاهده و مدیریت اطلاعات حساب کاربری</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-xl-10">
+            <!-- User Info Cards -->
+            <div class="row mb-4">
+                <div class="col-md-6 mb-3">
+                    <div class="card bg-black border-gold h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="icon-circle bg-gold me-3">
+                                <i class="fas fa-user text-black"></i>
+                            </div>
+                            <div class="info-content">
+                                <span class="text-white-50 small">نام کاربری</span>
+                                <h5 class="text-gold mb-0">{{ request.user.username }}</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="card bg-black border-gold h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="icon-circle bg-gold me-3">
+                                <i class="fas fa-envelope text-black"></i>
+                            </div>
+                            <div class="info-content">
+                                <span class="text-white-50 small">ایمیل</span>
+                                <h5 class="text-gold mb-0">{{ request.user.email }}</h5>
+                                {% if request.user.emailverified %}
+                                    <span class="badge bg-success mt-1">
+                                        <i class="fas fa-check-circle"></i> تایید شده
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phone Numbers Section -->
+            <div class="card bg-black border-gold mb-4">
+                <div class="card-body">
+                    <h4 class="text-gold mb-4">
+                        <i class="fas fa-phone-alt me-2"></i>
+                        شماره تماس
+                    </h4>
+
+                    {% if phone.phone_number %}
+                        <div class="phone-item card bg-darker border-gold mb-3">
+                            <div class="card-body d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <div class="icon-circle bg-gold me-3" style="width: 35px; height: 35px;">
+                                        <i class="fas fa-mobile-alt text-black small"></i>
+                                    </div>
+                                    <span class="text-white direction-ltr">
+                                        {{ phone.phone_number }}
+                                    </span>
+                                </div>
+
+                                <button class="btn btn-outline-gold btn-sm"
+                                        onclick="document.getElementById('edit-form').classList.toggle('d-none')">
+                                    تغییر شماره
+                                </button>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <!-- Edit/Add Form -->
+                    <div id="edit-form" class="{% if phone.phone_number %}d-none{% endif %}">
+                        <form method="POST" action="{% url 'users:my_account' request.user.id %}">
+                            {% csrf_token %}
+
+                            <div class="form-group mb-3">
+                                <label class="text-gold mb-2">
+                                    شماره تماس
+                                </label>
+
+                                <input type="text"
+                                    name="phone_number"
+                                    class="form-control bg-black text-white border-gold"
+                                    value="{{ phone.phone_number }}"
+                                    placeholder="0766657849"
+                                    required
+                                    maxlength="11">
+                            </div>
+
+                            <button type="submit" class="btn btn-gold">
+                                ذخیره
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!-- Additional Allauth Links -->
+            <div class="card bg-black border-gold">
+                <div class="card-body">
+                    <div class="action-links d-flex justify-content-center gap-3 flex-wrap">
+                        <a href="{% url 'account_change_password' %}" class="btn btn-outline-gold">
+                            <i class="fas fa-key me-1"></i>
+                            تغییر رمز عبور
+                        </a>
+                        <a href="{% url 'account_email' %}" class="btn btn-outline-gold">
+                            <i class="fas fa-envelope me-1"></i>
+                            مدیریت ایمیل‌ها
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+:root {
+    --gold: #FFD700;
+    --gold-light: #FFE55C;
+    --gold-dark: #B8860B;
+    --black: #000000;
+    --black-light: #1a1a1a;
+    --black-lighter: #2d2d2d;
+}
+
+/* Main Container */
+.account-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 30px;
+    background: var(--black);
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(255, 215, 0, 0.1);
+    border: 1px solid var(--gold);
+}
+
+/* Text Colors */
+.text-gold {
+    color: var(--gold) !important;
+}
+
+.bg-gold {
+    background: var(--gold) !important;
+}
+
+.bg-black {
+    background: var(--black) !important;
+}
+
+.bg-darker {
+    background: var(--black-light) !important;
+}
+
+.border-gold {
+    border-color: var(--gold) !important;
+}
+
+.btn-gold {
+    background: var(--gold);
+    color: var(--black);
+    border: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-gold:hover {
+    background: var(--gold-light);
+    color: var(--black);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+}
+
+.btn-outline-gold {
+    background: transparent;
+    color: var(--gold);
+    border: 2px solid var(--gold);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-gold:hover {
+    background: var(--gold);
+    color: var(--black);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+}
+
+/* Icon Circle */
+.icon-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Form Controls */
+.form-control.bg-black {
+    background: var(--black-light) !important;
+    border: 2px solid var(--gold-dark);
+    color: white !important;
+    padding: 12px;
+}
+
+.form-control.bg-black:focus {
+    background: var(--black-lighter) !important;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+    outline: none;
+}
+
+.form-control.is-invalid {
+    border-color: #dc3545 !important;
+    background-image: none;
+}
+
+.invalid-feedback {
+    color: #ff6b6b;
+    font-size: 0.875rem;
+    margin-top: 5px;
+}
+
+/* Direction for phone numbers */
+.direction-ltr {
+    direction: ltr;
+    display: inline-block;
+}
+
+/* Phone Items */
+.phone-item .card-body {
+    transition: all 0.3s ease;
+}
+
+.phone-item:hover .card-body {
+    background: var(--black-lighter);
+}
+
+/* Alert */
+.alert.border-gold {
+    border-right: 4px solid var(--gold);
+    background: var(--black-light);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .account-container {
+        margin: 20px;
+        padding: 20px;
+    }
+    
+    .action-links {
+        flex-direction: column;
+    }
+    
+    .action-links .btn {
+        width: 100%;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Collapse Animation */
+.collapse {
+    transition: all 0.3s ease;
+}
+</style>
+
+<script>
+function togglePhoneForm(phoneId) {
+    const form = document.getElementById(`edit-form-${phoneId}`);
+    const collapseInstance = bootstrap.Collapse.getOrCreateInstance(form);
+    collapseInstance.toggle();
+}
+
+// Form validation
+(function() {
+    'use strict';
+    
+    const forms = document.querySelectorAll('.needs-validation');
+    
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            form.classList.add('was-validated');
+        }, false);
+    });
+})();
+
+// Helper function for delete (if needed)
+function deletePhone(phoneId) {
+    if (confirm('آیا از حذف این شماره تماس اطمینان دارید؟')) {
+        fetch(`/users/delete-phone/${phoneId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('خطا در حذف شماره تماس');
+            }
+        });
+    }
+}
+
+// Helper function to get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+
+<!-- Required Bootstrap JS for collapse functionality -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Back-to-top button Start -->
+<div class="paginacontainer">
+    <div class="progress-wrap bounce">
+        <svg class="progress-circle svg-content" width="100%" height="100%" viewbox="-1 -1 102 102">
+            <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"></path>
+        </svg>
+    </div>
+</div>
+<!-- Back-to-top button End -->
+
+{% endblock %}

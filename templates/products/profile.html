@@ -1,0 +1,566 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Breadcrumb Start -->
+<div class="breadcrumb-wrap br-4 bg-f">
+    <div class="container">
+        <div class="breadcrumb-title">
+            <h2>پروفایل من</h2>
+            <ul class="breadcrumb-menu list-style">
+                <li><a href="/">داشبورد </a></li>
+                <li>پروفایل من</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+
+<!-- Cart section start -->
+<style>
+    .cart-wrap {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 40px 0;
+        /* Removed min-height: 100vh */
+        direction: rtl;
+    }
+
+    .cart-table {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        padding: 30px;
+        margin-bottom: 0;
+        /* Ensure no extra margin at bottom */
+    }
+
+    .cart-table h2 {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1a2639;
+        margin-bottom: 25px;
+        position: relative;
+        padding-bottom: 15px;
+    }
+
+    .cart-table h2:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+        border-radius: 2px;
+    }
+
+    /* Table Container with Horizontal Scroll */
+    .table-responsive {
+        overflow-x: auto;
+        margin: 0;
+        padding: 5px 0;
+        border-radius: 15px;
+    }
+
+    .table {
+        width: 100%;
+        min-width: 1300px;
+        border-collapse: collapse;
+        background: white;
+        margin-bottom: 0;
+        /* Remove bottom margin from table */
+    }
+
+    .table thead th {
+        background: #1a2639;
+        color: white;
+        font-weight: 600;
+        font-size: 14px;
+        padding: 15px 8px;
+        text-align: center;
+        white-space: nowrap;
+        border: none;
+    }
+
+    .table thead th:first-child {
+        border-radius: 10px 0 0 0;
+    }
+
+    .table thead th:last-child {
+        border-radius: 0 10px 0 0;
+    }
+
+    .table tbody tr {
+        border-bottom: 1px solid #edf2f7;
+        transition: background 0.3s ease;
+    }
+
+    .table tbody tr:hover {
+        background: #f7fafc;
+    }
+
+    .table tbody td {
+        padding: 15px 8px;
+        text-align: center;
+        font-size: 14px;
+        color: #4a5568;
+        vertical-align: middle;
+    }
+
+    .cart-item {
+        text-decoration: none;
+        color: #2d3748;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+
+    .cart-item:hover {
+        color: #ff6b6b;
+    }
+
+    .product-img {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 0 auto;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .cart-item-price {
+        font-weight: 700;
+        color: #2d3748;
+        margin: 0;
+    }
+
+    td span {
+        display: inline-block;
+        padding: 4px 8px;
+        background: #f7fafc;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 13px;
+    }
+
+    /* Price styling */
+    td:nth-child(5) span {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-weight: 700;
+    }
+
+    /* Action buttons container */
+    .action-buttons {
+        display: flex;
+        gap: 5px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .cart-action {
+        background: none;
+        border: none;
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .cart-action i {
+        font-size: 16px;
+    }
+
+    .cart-action.edit-action {
+        background: #e6fffa;
+        color: #319795;
+    }
+
+    .cart-action.edit-action:hover {
+        background: #319795;
+        color: white;
+        transform: scale(1.05);
+    }
+
+    .cart-action.delete-action {
+        background: #fff5f5;
+        color: #e53e3e;
+    }
+
+    .cart-action.delete-action:hover {
+        background: #e53e3e;
+        color: white;
+        transform: scale(1.05);
+    }
+
+    /* Custom Scrollbar */
+    .table-responsive::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+        border-radius: 10px;
+    }
+
+    /* Empty state */
+    .empty-state {
+        text-align: center;
+        padding: 50px;
+        background: #f7fafc;
+        border-radius: 15px;
+    }
+
+    .empty-state i {
+        font-size: 48px;
+        color: #cbd5e0;
+        margin-bottom: 15px;
+    }
+
+    .empty-state p {
+        color: #718096;
+        font-size: 16px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .cart-wrap {
+            padding: 20px 0;
+        }
+
+        .cart-table {
+            padding: 20px;
+        }
+
+        .cart-table h2 {
+            font-size: 22px;
+        }
+    }
+
+    /* Ensure footer sticks properly */
+    .paginacontainer {
+        margin-top: 0;
+        padding-top: 0;
+    }
+</style>
+
+<div class="cart-wrap" style="font-family: 'Vazirmatn', sans-serif;">
+    <div class="container">
+        <div class="cart-table">
+            <h2>🚗 تمام موتر های شما <span
+                    style="font-size: 14px; color: #718096; margin-right: 10px; font-weight: normal;">({{products|length }} موتر)</span></h2>
+
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">عنوان</th>
+                            <th scope="col">عکس</th>
+                            <th scope="col">برند</th>
+                            <th scope="col">سال ساخت</th>
+                            <th scope="col">قیمت</th>
+                            <th scope="col">گیربکس</th>
+                            <th scope="col">سوخت</th>
+                            <th scope="col">کیلومتر</th>
+                            <th scope="col">تاریخ</th>
+                            <th scope="col">عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pro in products %}
+                        <tr>
+                            <td>
+                                <a class="cart-item" href="{% url 'products:car_detail' pro.id %}">
+                                    <span style="background: transparent; padding: 0;">{{ pro.title|truncatechars:20}}</span>
+                                </a>
+                            </td>
+                            <td>
+                                <div class="product-img">
+                                    <img src="{{ pro.main_image.url }}" alt="Image">
+                                </div>
+                            </td>
+                            <td>
+                                <span>{{ pro.brand_model|truncatechars:15 }}</span>
+                            </td>
+                            <td>
+                                <p class="cart-item-price">{{ pro.year_of_manufacture }}</p>
+                            </td>
+                            <td>
+                                <span>{{ pro.price|floatformat:0 }}</span>
+                            </td>
+                            <td>
+                                <span>{{ pro.get_gearbox_type_display }}</span>
+                            </td>
+                            <td>
+                                <span>{{ pro.get_fuel_type_display }}</span>
+                            </td>
+                            <td>
+                                <span>{{ pro.mileage_km|floatformat:0 }} km</span>
+                            </td>
+                            <td>
+                                <span>{{ pro.created_at|date:"Y/m/d" }}</span>
+                            </td>
+                            <!-- Add this CSS for the modal -->
+                            <style>
+                                /* Modal styles */
+                                .delete-modal {
+                                    border: none;
+                                    border-radius: 16px;
+                                    padding: 0;
+                                    max-width: 400px;
+                                    width: 90%;
+                                    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                                    font-family: 'Vazirmatn', sans-serif;
+                                }
+
+                                .delete-modal::backdrop {
+                                    background: rgba(0, 0, 0, 0.5);
+                                    backdrop-filter: blur(4px);
+                                }
+
+                                .modal-content {
+                                    padding: 30px;
+                                    text-align: center;
+                                }
+
+                                .modal-icon {
+                                    width: 70px;
+                                    height: 70px;
+                                    background: #fee2e2;
+                                    border-radius: 50%;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    margin: 0 auto 20px;
+                                }
+
+                                .modal-icon i {
+                                    font-size: 35px;
+                                    color: #ef4444;
+                                }
+
+                                .modal-content h3 {
+                                    font-size: 24px;
+                                    color: #1a2639;
+                                    margin-bottom: 10px;
+                                    font-weight: 700;
+                                }
+
+                                .modal-content p {
+                                    color: #6b7280;
+                                    margin-bottom: 25px;
+                                    font-size: 16px;
+                                }
+
+                                .modal-buttons {
+                                    display: flex;
+                                    gap: 10px;
+                                    justify-content: center;
+                                }
+
+                                .modal-btn {
+                                    padding: 12px 30px;
+                                    border: none;
+                                    border-radius: 10px;
+                                    font-size: 16px;
+                                    font-weight: 600;
+                                    cursor: pointer;
+                                    transition: all 0.3s ease;
+                                    font-family: 'Vazirmatn', sans-serif;
+                                    text-decoration: none;
+                                    display: inline-block;
+                                }
+
+                                .modal-btn.cancel {
+                                    background: #f3f4f6;
+                                    color: #4b5563;
+                                }
+
+                                .modal-btn.cancel:hover {
+                                    background: #e5e7eb;
+                                }
+
+                                .modal-btn.delete {
+                                    background: #ef4444;
+                                    color: white;
+                                }
+
+                                .modal-btn.delete:hover {
+                                    background: #dc2626;
+                                }
+
+                                /* Form styles */
+                                .delete-form {
+                                    display: inline-block;
+                                }
+
+                                .delete-btn {
+                                    background: none;
+                                    border: none;
+                                    cursor: pointer;
+                                    width: 32px;
+                                    height: 32px;
+                                    border-radius: 6px;
+                                    display: inline-flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    transition: all 0.3s ease;
+                                    background: #fff5f5;
+                                    color: #e53e3e;
+                                }
+
+                                .delete-btn:hover {
+                                    background: #e53e3e;
+                                    color: white;
+                                    transform: scale(1.05);
+                                }
+
+                                .delete-btn i {
+                                    font-size: 16px;
+                                }
+                            </style>
+
+                            <!-- Update your delete button in the table -->
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="cart-action edit-action" type="button"
+                                        onclick="editProduct({{ pro.id }})" title="ویرایش">
+                                        <i class="ri-edit-2-fill"></i>
+                                    </button>
+
+                                    <!-- Delete button that opens modal -->
+                                    <button class="delete-btn" type="button"
+                                        onclick="document.getElementById('deleteModal-{{ pro.id }}').showModal()"
+                                        title="حذف">
+                                        <i class="ri-delete-bin-5-fill"></i>
+                                    </button>
+
+                                    <!-- Modal for each product -->
+                                    <dialog id="deleteModal-{{ pro.id }}" class="delete-modal">
+                                        <div class="modal-content">
+                                            <div class="modal-icon">
+                                                <i class="ri-delete-bin-line"></i>
+                                            </div>
+                                            <h3>حذف موتر</h3>
+                                            <p>آیا از حذف "{{ pro.title }}" اطمینان دارید؟</p>
+                                            <div class="modal-buttons">
+                                                <!-- Delete form first -->
+                                                <form class="delete-form" method="POST"
+                                                    action="{% url 'products:delete_car' pro.id %}">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="modal-btn delete">
+                                                        حذف
+                                                    </button>
+                                                </form>
+
+                                                <!-- Cancel button second -->
+                                                <button class="modal-btn cancel" type="button"
+                                                    onclick="document.getElementById('deleteModal-{{ pro.id }}').close()">
+                                                    انصراف
+                                                </button>
+                                            </div>
+                                            <style>
+                                                .modal-buttons {
+                                                    display: flex;
+                                                    gap: 10px;
+                                                    justify-content: center;
+                                                    direction: ltr;
+                                                    /* Keep buttons in correct order */
+                                                }
+
+                                                .modal-btn {
+                                                    padding: 10px 25px;
+                                                    border: none;
+                                                    border-radius: 8px;
+                                                    font-size: 15px;
+                                                    font-weight: 500;
+                                                    cursor: pointer;
+                                                    transition: all 0.2s ease;
+                                                    font-family: 'Vazirmatn', sans-serif;
+                                                    min-width: 100px;
+                                                }
+
+                                                .modal-btn.delete {
+                                                    background: #dc2626;
+                                                    color: white;
+                                                }
+
+                                                .modal-btn.delete:hover {
+                                                    background: #b91c1c;
+                                                }
+
+                                                .modal-btn.cancel {
+                                                    background: #e5e7eb;
+                                                    color: #374151;
+                                                }
+
+                                                .modal-btn.cancel:hover {
+                                                    background: #d1d5db;
+                                                }
+
+                                                /* Form style */
+                                                .delete-form {
+                                                    margin: 0;
+                                                }
+                                            </style>
+                                        </div>
+                                    </dialog>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="10" style="text-align: center; padding: 50px;">
+                                <div class="empty-state">
+                                    <i class="ri-car-line"></i>
+                                    <p>هیچ موتری یافت نشد</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function editProduct(productId) {
+        console.log('Edit product:', productId);
+        // window.location.href = `/edit-product/${productId}/`;
+    }
+
+    function deleteProduct(productId) {
+        if (confirm('آیا از حذف این موتر اطمینان دارید؟')) {
+            console.log('Delete product:', productId);
+            // window.location.href = `/delete-product/${productId}/`;
+        }
+    }
+</script>
+<!-- Cart section end -->
+<!-- Back-to-top button Start -->
+<div class="paginacontainer">
+    <div class="progress-wrap bounce">
+        <svg class="progress-circle svg-content" width="100%" height="100%" viewbox="-1 -1 102 102">
+            <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"></path>
+        </svg>
+    </div>
+</div>
+<!-- Back-to-top button End -->
+
+{% endblock %}

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
 from django.contrib import messages
 # Create your views here.
@@ -24,6 +24,7 @@ def add_listing(request):
 
         # Create the main NewCar record
         car = NewCar.objects.create(
+            user=request.user,
             title=title,
             brand_model=brand_model,
             price=price,
@@ -60,6 +61,20 @@ def add_listing(request):
             )
 
         messages.success(request, 'موتر با موفقیت اضافه شد.')
-        return redirect('home:dashboard')  
+        return redirect('users:profile', id=request.user.id)  
 
     return render(request, 'products/add-listing.html')
+
+
+def delete_car(request, id):
+    car = get_object_or_404(NewCar, id=id)
+    car.delete()
+
+    messages.success(request, 'موتر ذیل موفقانه حذف شد')
+
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+
+def car_detail(request, id):
+    car = get_object_or_404(NewCar.objects.prefetch_related('images'), id=id)
+    return render(request, 'products/car-detail.html', {'car': car})
