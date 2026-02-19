@@ -262,15 +262,15 @@
     <div class="container">
         <div class="cart-table">
             <h2>🚗 تمام موتر های شما <span
-                    style="font-size: 14px; color: #718096; margin-right: 10px; font-weight: normal;">({{products|length }} موتر)</span></h2>
+                    style="font-size: 14px; color: #718096; margin-right: 10px; font-weight: normal;">({{products|length}} موتر)</span></h2>
 
             <div class="table-responsive">
                 <table class="table">
                     <thead>
                         <tr>
+                            <th scope="col">نشر شده</th>
                             <th scope="col">عنوان</th>
                             <th scope="col">عکس</th>
-                            <th scope="col">برند</th>
                             <th scope="col">سال ساخت</th>
                             <th scope="col">قیمت</th>
                             <th scope="col">گیربکس</th>
@@ -284,17 +284,47 @@
                         {% for pro in products %}
                         <tr>
                             <td>
+                                {% if pro.is_activated %}
+                                <span class="status-badge active">
+                                    <i class="ri-checkbox-circle-fill"></i> نشر شده
+                                </span>
+                                {% else %}
+                                <span class="status-badge inactive">
+                                    <i class="ri-close-circle-fill"></i> انتظار
+                                </span>
+                                {% endif %}
+                            </td>
+                            <style>
+                                .status-badge {
+                                    display: inline-flex;
+                                    align-items: center;
+                                    gap: 5px;
+                                    padding: 5px 12px;
+                                    border-radius: 20px;
+                                    font-size: 13px;
+                                    font-weight: 500;
+                                }
+
+                                .status-badge.active {
+                                    background-color: rgba(0, 200, 83, 0.1);
+                                    color: #00c853;
+                                }
+
+                                .status-badge.inactive {
+                                    background-color: rgba(164, 94, 89, 0.1);
+                                    color: #efdc08;
+                                }
+                            </style>
+
+                            <td>
                                 <a class="cart-item" href="{% url 'products:car_detail' pro.id %}">
-                                    <span style="background: transparent; padding: 0;">{{ pro.title|truncatechars:20}}</span>
+                                    <span style="background: transparent; padding: 0;">{{pro.title|truncatechars:20}}</span>
                                 </a>
                             </td>
                             <td>
                                 <div class="product-img">
                                     <img src="{{ pro.main_image.url }}" alt="Image">
                                 </div>
-                            </td>
-                            <td>
-                                <span>{{ pro.brand_model|truncatechars:15 }}</span>
                             </td>
                             <td>
                                 <p class="cart-item-price">{{ pro.year_of_manufacture }}</p>
@@ -437,10 +467,9 @@
                             <!-- Update your delete button in the table -->
                             <td>
                                 <div class="action-buttons">
-                                    <button class="cart-action edit-action" type="button"
-                                        onclick="editProduct({{ pro.id }})" title="ویرایش">
+                                    <a href="{% url 'products:edit_car' pro.id %}" class="cart-action edit-action" title="ایدیت">
                                         <i class="ri-edit-2-fill"></i>
-                                    </button>
+                                    </a>
 
                                     <!-- Delete button that opens modal -->
                                     <button class="delete-btn" type="button"

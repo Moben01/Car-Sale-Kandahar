@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
 from django.contrib import messages
+from django.http import HttpResponse
+from users.models import *
 from django.db.models import Q, Case, When, Value, IntegerField
 # Create your views here.
 
@@ -11,6 +13,12 @@ def add_listing(request):
     if not request.user.emailaddress_set.filter(verified=True).exists():
         return redirect('account_email_verification_sent')
     
+    user_phone_number = UserPhone.objects.filter(user=request.user).last()
+    
+    if not user_phone_number.phone_number:  
+        messages.warning(request, "لطفاً شماره تماس خود را تکمیل کنید.")
+        return redirect('users:my_account', id=request.user.id) 
+    
     if request.method == 'POST':
         # Get main car fields
         title = request.POST.get('title')
@@ -19,6 +27,9 @@ def add_listing(request):
         year_of_manufacture = request.POST.get('year_of_manufacture')
         gearbox_type = request.POST.get('gearbox_type')
         fuel_type = request.POST.get('fuel_type')
+        palet = request.POST.get('palet')
+        asnad = request.POST.get('asnad')
+        color = request.POST.get('color')
         mileage_km = request.POST.get('mileage_km')
         description = request.POST.get('description')
         main_image = request.FILES.get('main_image')  # optional main image
@@ -27,8 +38,10 @@ def add_listing(request):
         car = NewCar.objects.create(
             user=request.user,
             title=title,
-            brand_model=brand_model,
             price=price,
+            palet=palet,
+            asnad=asnad,
+            color=color,
             year_of_manufacture=year_of_manufacture,
             gearbox_type=gearbox_type,
             fuel_type=fuel_type,
@@ -74,6 +87,82 @@ def delete_car(request, id):
     messages.success(request, 'موتر ذیل موفقانه حذف شد')
 
     return redirect(request.META.get('HTTP_REFERER', '/'))
+
+
+def edit_car(request, id):
+    car = get_object_or_404(NewCar, id=id)
+    
+    # Check if user owns this car
+    if car.user != request.user:
+        messages.error(request, 'شما اجازه ایدیت این موتر را ندارید.')
+        return redirect('products:shop')
+    
+    if request.method == 'POST':
+        # Update main car fields
+        car.title = request.POST.get('title')
+        car.brand_model = request.POST.get('brand_model')
+        car.price = request.POST.get('price')
+        car.year_of_manufacture = request.POST.get('year_of_manufacture')
+        car.gearbox_type = request.POST.get('gearbox_type')
+        car.fuel_type = request.POST.get('fuel_type')
+        car.mileage_km = request.POST.get('mileage_km')
+        car.description = request.POST.get('description')
+        
+        # Handle activation status
+        car.is_activated = request.POST.get('is_activated') == 'off'
+        
+        # Handle main image
+        if request.POST.get('remove_main_image'):
+            # Delete main image if checkbox was checked
+            if car.main_image:
+                car.main_image.delete(save=False)
+                car.main_image = None
+        elif request.FILES.get('main_image'):
+            # Upload new main image
+            car.main_image = request.FILES['main_image']
+        
+        car.save()
+        
+        # Handle removal of existing additional images
+        remove_images = request.POST.getlist('remove_images')
+        if remove_images:
+            # Delete selected images from database and filesystem
+            images_to_remove = NewCarImage.objects.filter(id__in=remove_images, car=car)
+            for img in images_to_remove:
+                img.image.delete(save=False)  # Delete file
+            images_to_remove.delete()  # Delete from database
+        
+        # Update captions for existing images
+        for key, value in request.POST.items():
+            if key.startswith('caption_'):
+                try:
+                    image_id = int(key.split('_')[1])
+                    image = NewCarImage.objects.get(id=image_id, car=car)
+                    image.caption = value
+                    image.save()
+                except (ValueError, NewCarImage.DoesNotExist):
+                    pass
+        
+        # Handle new additional images - look for dynamically named fields
+        for key in request.FILES:
+            if key.startswith('more_images_'):
+                # Get index from input name: e.g., more_images_0
+                index = key.split('_')[-1]
+                image_file = request.FILES[key]
+                caption = request.POST.get(f'image_caption_{index}', '')
+                NewCarImage.objects.create(
+                    car=car,
+                    image=image_file,
+                    caption=caption
+                )
+        
+        messages.success(request, 'موتر با موفقیت ایدیت شد.')
+        return redirect('users:profile', id=request.user.id)
+    
+    context = {
+        'car': car,
+    }
+    return render(request, 'products/car-edit.html', context)
 
 
 def car_detail(request, id):

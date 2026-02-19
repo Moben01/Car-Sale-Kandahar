@@ -1,39 +1,355 @@
-{% extends "account/base_entrance.html" %}
+{% extends 'base.html' %}
+{% load static %}
 {% load i18n %}
 {% load account %}
 {% load allauth %}
+
 {% block head_title %}
-    {% trans "Confirm Email Address" %}
+    تایید آدرس ایمیل
 {% endblock head_title %}
+
 {% block content %}
-    {% element h1 %}
-        {% trans "Confirm Email Address" %}
-    {% endelement %}
-    {% if confirmation %}
-        {% user_display confirmation.email_address.user as user_display %}
-        {% if can_confirm %}
-            {% element p %}
-                {% blocktrans with confirmation.email_address.email as email %}Please confirm that <a href="mailto:{{ email }}">{{ email }}</a> is an email address for user {{ user_display }}.{% endblocktrans %}
-            {% endelement %}
-            {% url 'account_confirm_email' confirmation.key as action_url %}
-            {% element form method="post" action=action_url %}
-                {% slot actions %}
-                    {% csrf_token %}
-                    {{ redirect_field }}
-                    {% element button type="submit" %}
-                        {% trans 'Confirm' %}
-                    {% endelement %}
-                {% endslot %}
-            {% endelement %}
-        {% else %}
-            {% element p %}
-                {% blocktrans %}Unable to confirm {{ email }} because it is already confirmed by a different account.{% endblocktrans %}
-            {% endelement %}
-        {% endif %}
-    {% else %}
-        {% url 'account_email' as email_url %}
-        {% element p %}
-            {% blocktrans %}This email confirmation link expired or is invalid. Please <a href="{{ email_url }}">issue a new email confirmation request</a>.{% endblocktrans %}
-        {% endelement %}
-    {% endif %}
+<style>
+    /* Hide header and footer */
+    header, footer, .main-header, .site-header, .main-footer, .site-footer {
+        display: none !important;
+    }
+    
+    /* Center the content with black/golden theme */
+    body {
+        background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+        font-family: 'Vazirmatn', 'Tahoma', sans-serif;
+    }
+    
+    .confirm-wrap {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 0;
+    }
+    
+    .confirm-box {
+        position: relative;
+        overflow: hidden;
+        border-radius: 20px;
+        box-shadow: 0 20px 50px rgba(255, 215, 0, 0.15);
+        max-width: 550px;
+        margin: 0 auto;
+        background: #111;
+        border: 1px solid rgba(255, 215, 0, 0.2);
+    }
+    
+    /* Decorative elements */
+    .confirm-shape-one,
+    .confirm-shape-two {
+        position: absolute;
+        opacity: 0.05;
+        pointer-events: none;
+    }
+    
+    .confirm-shape-one {
+        top: -50px;
+        left: -50px;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(circle, #ffd700 0%, transparent 70%);
+        border-radius: 50%;
+    }
+    
+    .confirm-shape-two {
+        bottom: -50px;
+        right: -50px;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, #ffd700 0%, transparent 70%);
+        border-radius: 50%;
+    }
+    
+    .row {
+        justify-content: center;
+    }
+    
+    .col-lg-8 {
+        flex: 0 0 100%;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    
+    .confirm-content {
+        padding: 50px 40px;
+        text-align: center;
+        position: relative;
+        z-index: 2;
+    }
+    
+    /* Email Icon */
+    .confirm-icon {
+        margin-bottom: 30px;
+    }
+    
+    .confirm-icon svg {
+        width: 80px;
+        height: 80px;
+        color: #ffd700;
+        filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.3));
+    }
+    
+    .content-title {
+        margin-bottom: 30px;
+    }
+    
+    .content-title span {
+        color: #ffd700;
+        font-size: 16px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        display: block;
+        margin-bottom: 15px;
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    }
+    
+    .content-title h2 {
+        font-size: 32px;
+        font-weight: 700;
+        margin: 0 0 20px;
+        color: #ffd700;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        letter-spacing: 1px;
+    }
+    
+    .content-title h2::after {
+        content: '';
+        display: block;
+        width: 80px;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, #ffd700, transparent);
+        margin: 20px auto 0;
+    }
+    
+    /* Message Box */
+    .message-box {
+        background: rgba(255, 215, 0, 0.05);
+        border: 1px solid rgba(255, 215, 0, 0.2);
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+    
+    .message-box p {
+        color: #fff;
+        font-size: 16px;
+        line-height: 1.8;
+        margin: 0 0 15px 0;
+    }
+    
+    .message-box p:last-child {
+        margin-bottom: 0;
+    }
+    
+    .message-box a {
+        color: #ffd700;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+    
+    .message-box a:hover {
+        color: #fff;
+        text-decoration: underline;
+    }
+    
+    .message-box .email-highlight {
+        color: #ffd700;
+        font-weight: 700;
+        font-size: 18px;
+        display: inline-block;
+        margin: 10px 0;
+        padding: 5px 15px;
+        background: rgba(255, 215, 0, 0.1);
+        border-radius: 30px;
+        border: 1px solid rgba(255, 215, 0, 0.3);
+    }
+    
+    .user-info {
+        color: #999;
+        font-size: 15px;
+        margin-top: 10px;
+    }
+    
+    .user-info strong {
+        color: #ffd700;
+        font-weight: 600;
+    }
+    
+    /* Warning Box for errors */
+    .warning-box {
+        background: rgba(255, 107, 107, 0.1);
+        border: 1px solid #ff6b6b;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+    
+    .warning-box p {
+        color: #ff6b6b;
+        font-size: 16px;
+        line-height: 1.8;
+        margin: 0;
+    }
+    
+    .warning-box a {
+        color: #ffd700;
+        text-decoration: none;
+        font-weight: 600;
+    }
+    
+    .warning-box a:hover {
+        text-decoration: underline;
+    }
+    
+    /* Button */
+    .btn-gold {
+        background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%);
+        color: #000;
+        border: none;
+        padding: 16px 40px;
+        border-radius: 12px;
+        font-size: 18px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
+        display: inline-block;
+        width: 100%;
+        font-family: 'Vazirmatn', 'Tahoma', sans-serif;
+    }
+    
+    .btn-gold:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
+        background: linear-gradient(135deg, #ffd700 0%, #daa520 100%);
+    }
+    
+    /* Progress circle */
+    .progress-wrap svg path {
+        stroke: #ffd700 !important;
+    }
+    
+    /* RTL Support */
+    .container {
+        direction: rtl;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .confirm-content {
+            padding: 40px 25px;
+        }
+        
+        .content-title h2 {
+            font-size: 26px;
+        }
+        
+        .message-box .email-highlight {
+            font-size: 16px;
+        }
+        
+        .col-lg-8 {
+            max-width: 100%;
+            padding: 0 20px;
+        }
+    }
+</style>
+
+<!-- Confirm Email Section Start -->
+<div class="confirm-wrap">
+    <div class="container">
+        <div class="confirm-box">
+            <div class="confirm-shape-one"></div>
+            <div class="confirm-shape-two"></div>
+            
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="confirm-content">
+                        <!-- Email Icon -->
+                        <div class="confirm-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor"/>
+                                <path d="M22 7L12 13L2 7" stroke="currentColor" stroke-linecap="round"/>
+                                <circle cx="12" cy="13" r="1" fill="#ffd700" stroke="none"/>
+                                <path d="M17 17L21 21M21 17L17 21" stroke="currentColor" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="content-title">
+                            <span>تایید ایمیل</span>
+                            <h2>تایید آدرس ایمیل</h2>
+                        </div>
+                        
+                        {% if confirmation %}
+                            {% user_display confirmation.email_address.user as user_display %}
+                            {% if can_confirm %}
+                                <div class="message-box">
+                                    <p>
+                                        لطفاً تأیید کنید که ایمیل
+                                    </p>
+                                    <span class="email-highlight">
+                                        <a href="mailto:{{ confirmation.email_address.email }}">{{ confirmation.email_address.email }}</a>
+                                    </span>
+                                    <p>
+                                        برای کاربر زیر می‌باشد:
+                                    </p>
+                                    <div class="user-info">
+                                        <strong>{{ user_display }}</strong>
+                                    </div>
+                                </div>
+                                
+                                {% url 'account_confirm_email' confirmation.key as action_url %}
+                                <form method="post" action="{{ action_url }}">
+                                    {% csrf_token %}
+                                    {{ redirect_field }}
+                                    
+                                    <button type="submit" class="btn-gold">
+                                        تایید
+                                    </button>
+                                </form>
+                            {% else %}
+                                <div class="warning-box">
+                                    <p>
+                                        امکان تأیید ایمیل {{ confirmation.email_address.email }} وجود ندارد زیرا قبلاً توسط حساب دیگری تأیید شده است.
+                                    </p>
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            {% url 'account_email' as email_url %}
+                            <div class="warning-box">
+                                <p>
+                                    این لینک تأیید ایمیل منقضی شده یا نامعتبر است. لطفاً 
+                                    <a href="{{ email_url }}">یک درخواست تأیید ایمیل جدید ارسال کنید</a>.
+                                </p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Confirm Email Section End -->
+
+<!-- Back-to-top button Start -->
+<div class="paginacontainer">	
+    <div class="progress-wrap bounce">
+        <svg class="progress-circle svg-content" width="100%" height="100%" viewbox="-1 -1 102 102">
+            <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98" stroke="#ffd700" stroke-width="4" fill="none"/>
+        </svg>
+    </div>
+</div> 
+<!-- Back-to-top button End -->
 {% endblock content %}

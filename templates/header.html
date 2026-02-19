@@ -59,23 +59,24 @@
                                 <span>دنبال کنید:</span>
                                 <ul class="social-profile list-style">
                                     <li>
-                                        <a href="https://facebook.com">
+                                        <a href="{{ social_media.facebook }}">
                                             <i class="flaticon-facebook"></i>
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="https://instagram.com">
+                                        <a href="{{ social_media.instagram }}">
                                             <i class="flaticon-instagram"></i>
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="https://twitter.com">
-                                            <i class="flaticon-twitter"></i>
+                                        <a href="{{ social_media.youtube }}" target="_blank">
+                                            <i class="ri-youtube-fill"></i>
                                         </a>
                                     </li>
+
                                     <li>
-                                        <a href="https://linkedin.com">
-                                            <i class="flaticon-linkedin"></i>
+                                        <a href="{{ social_media.tiktok }}" target="_blank">
+                                            <i class="ri-tiktok-fill"></i>
                                         </a>
                                     </li>
                                 </ul>
@@ -240,7 +241,10 @@
                 </nav>
                 <div class="mobile-bar-wrap">
                     <a href="compare.html" class="compare-btn d-lg-none"><i class="flaticon-compare"></i><span class="cart-count">۱۰</span></a>
-                    <a class="shopcart  d-lg-none" href="cart.html"><i class="flaticon-shopping-bag-1"></i><span class="cart-count">۱</span></a>
+                    <a class="shopcart d-lg-none" href="cart.html">
+                        <i class="flaticon-car"></i>
+                        <span class="cart-count">{{ car_count }}</span>
+                    </a>
                     <button class="sidebar-btn  d-lg-none"><i class="flaticon-search"></i></button>
                     <div class="mobile-menu d-lg-none">
                         <a href="javascript:void(0)"><i class="ri-menu-line"></i></a>

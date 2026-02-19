@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 
-<div class="breadcrumb-wrap br-4 bg-f">
+<div class="breadcrumb-wrap br-4 bg-f" style="font-family: 'Vazirmatn', sans-serif;">
     <div class="container">
         <div class="breadcrumb-title">
             <h2>{{ car.title }}</h2>
@@ -504,7 +504,7 @@
                         <!-- Title & Price -->
                         <div class="title-section">
                             <h1>{{ car.title }}</h1>
-                            <span class="price-tag">{{ car.price|floatformat:0 }} </span>
+                            <span class="price-tag">{{ car.price|floatformat:0 }} دالر </span>
                         </div>
                         
                         <!-- Quick Info Grid -->
@@ -553,8 +553,18 @@
                         <!-- Details List -->
                         <div class="details-list">
                             <div class="detail-row">
-                                <span class="detail-label">برند/مدل</span>
-                                <span class="detail-value">{{ car.brand_model }}</span>
+                                <span class="detail-label">پلیت</span>
+                                <span class="detail-value">{{ car.palet }}</span>
+                            </div>
+                        <div class="details-list">
+                            <div class="detail-row">
+                                <span class="detail-label">اسناد</span>
+                                <span class="detail-value">{{ car.asnad }}</span>
+                            </div>
+                        <div class="details-list">
+                            <div class="detail-row">
+                                <span class="detail-label">رنگ</span>
+                                <span class="detail-value">{{ car.color }}</span>
                             </div>
                             
                             <div class="detail-row">
@@ -584,7 +594,7 @@
                         <div class="description-section">
                             <div class="description-title">
                                 <i class="ri-file-text-line"></i>
-                                <span>توضیحات</span>
+                                <span>توضیحات بیشتر</span>
                             </div>
                             <div class="description-text">
                                 {{ car.description }}

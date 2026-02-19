@@ -3,21 +3,26 @@
 {% load allauth i18n %}
 
 {% block head_title %}
-    {% trans "Signup" %}
+{% trans "Signup" %}
 {% endblock head_title %}
 
 {% block content %}
 <style>
     /* Hide header and footer */
-    header, footer, .main-header, .site-header, .main-footer, .site-footer {
+    header,
+    footer,
+    .main-header,
+    .site-header,
+    .main-footer,
+    .site-footer {
         display: none !important;
     }
-    
+
     /* Center the content with black/golden theme */
     body {
         background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
     }
-    
+
     .app-wrap {
         min-height: 100vh;
         display: flex;
@@ -25,7 +30,7 @@
         justify-content: center;
         padding: 40px 0;
     }
-    
+
     .app-box {
         position: relative;
         overflow: hidden;
@@ -36,7 +41,7 @@
         background: #111;
         border: 1px solid rgba(255, 215, 0, 0.2);
     }
-    
+
     /* Decorative elements */
     .app-shape-one,
     .app-shape-two {
@@ -44,7 +49,7 @@
         opacity: 0.05;
         pointer-events: none;
     }
-    
+
     .app-shape-one {
         top: -50px;
         left: -50px;
@@ -53,7 +58,7 @@
         background: radial-gradient(circle, #ffd700 0%, transparent 70%);
         border-radius: 50%;
     }
-    
+
     .app-shape-two {
         bottom: -50px;
         right: -50px;
@@ -62,28 +67,28 @@
         background: radial-gradient(circle, #ffd700 0%, transparent 70%);
         border-radius: 50%;
     }
-    
+
     .row {
         justify-content: center;
     }
-    
+
     .col-lg-6 {
         flex: 0 0 100%;
         max-width: 500px;
         margin: 0 auto;
     }
-    
+
     .app-content {
         padding: 40px;
         text-align: center;
         position: relative;
         z-index: 2;
     }
-    
+
     .content-title-two {
         margin-bottom: 30px;
     }
-    
+
     .content-title-two span {
         color: #ffd700;
         font-size: 16px;
@@ -94,7 +99,7 @@
         margin-bottom: 15px;
         text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
     }
-    
+
     .content-title-two h3 {
         font-size: 32px;
         font-weight: 700;
@@ -103,7 +108,7 @@
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         letter-spacing: 1px;
     }
-    
+
     .content-title-two h3::after {
         content: '';
         display: block;
@@ -112,22 +117,22 @@
         background: linear-gradient(90deg, transparent, #ffd700, transparent);
         margin: 20px auto 0;
     }
-    
+
     .content-title-two p {
         color: #999;
         font-size: 16px;
     }
-    
+
     /* Form Styles */
     .signup-form {
         margin-top: 20px;
     }
-    
+
     .signup-form .form-group {
         margin-bottom: 20px;
         text-align: left;
     }
-    
+
     .signup-form input[type="text"],
     .signup-form input[type="email"],
     .signup-form input[type="password"] {
@@ -140,18 +145,18 @@
         background-color: #222;
         color: #fff;
     }
-    
+
     .signup-form input::placeholder {
         color: #666;
     }
-    
+
     .signup-form input:focus {
         outline: none;
         border-color: #ffd700;
         background-color: #2a2a2a;
         box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.1);
     }
-    
+
     /* Password help text styling */
     .signup-form .form-text {
         color: #fff !important;
@@ -166,27 +171,27 @@
         border-radius: 8px;
         border-left: 3px solid #ffd700;
     }
-    
+
     .signup-form .form-text ul {
         list-style: none;
         padding: 0;
         margin: 5px 0 0 0;
     }
-    
+
     .signup-form .form-text li {
         margin: 8px 0;
         display: flex;
         align-items: center;
         gap: 10px;
     }
-    
+
     .signup-form .form-text li::before {
         content: "•";
         color: #ffd700;
         font-size: 18px;
         font-weight: bold;
     }
-    
+
     .signup-form .btn-primary {
         background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%);
         color: #000;
@@ -203,13 +208,13 @@
         margin-top: 10px;
         box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
     }
-    
+
     .signup-form .btn-primary:hover {
         transform: translateY(-2px);
         box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
         background: linear-gradient(135deg, #ffd700 0%, #daa520 100%);
     }
-    
+
     .signup-form .btn-outline-primary {
         background: transparent;
         color: #ffd700;
@@ -225,14 +230,14 @@
         width: 100%;
         text-align: center;
     }
-    
+
     .signup-form .btn-outline-primary:hover {
         background: #ffd700;
         color: #000;
         transform: translateY(-2px);
         box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
     }
-    
+
     .signup-form .text-danger {
         color: #ff6b6b;
         font-size: 13px;
@@ -240,42 +245,42 @@
         display: block;
         padding-left: 5px;
     }
-    
+
     .login-link {
         margin-top: 25px;
         padding-top: 20px;
         border-top: 2px dashed #333;
     }
-    
+
     .login-link p {
         color: #999;
         font-size: 15px;
     }
-    
+
     .login-link a {
         color: #ffd700;
         text-decoration: none;
         font-weight: 600;
         transition: color 0.3s ease;
     }
-    
+
     .login-link a:hover {
         color: #fff;
         text-decoration: underline;
     }
-    
+
     /* Social Login Styles */
     .social-login {
         margin-top: 30px;
     }
-    
+
     .social-login p {
         color: #999;
         font-size: 14px;
         margin-bottom: 15px;
         position: relative;
     }
-    
+
     .social-login p::before,
     .social-login p::after {
         content: "";
@@ -285,15 +290,15 @@
         height: 1px;
         background: #333;
     }
-    
+
     .social-login p::before {
         left: 0;
     }
-    
+
     .social-login p::after {
         right: 0;
     }
-    
+
     .social-login .socialaccount_providers {
         list-style: none;
         padding: 0;
@@ -302,12 +307,12 @@
         justify-content: center;
         gap: 15px;
     }
-    
+
     .social-login .socialaccount_providers li {
         display: inline-block;
         flex: 1;
     }
-    
+
     .social-login .socialaccount_providers a {
         display: flex;
         align-items: center;
@@ -322,7 +327,7 @@
         font-weight: 500;
         gap: 8px;
     }
-    
+
     .social-login .socialaccount_providers a:hover {
         background: #2a2a2a;
         border-color: #ffd700;
@@ -330,36 +335,36 @@
         box-shadow: 0 5px 15px rgba(255, 215, 0, 0.2);
         color: #ffd700;
     }
-    
+
     hr {
         margin: 25px 0;
         border: 0;
         border-top: 2px solid #333;
     }
-    
+
     .app-img {
         display: none;
     }
-    
+
     /* Progress circle for back-to-top */
     .progress-wrap svg path {
         stroke: #ffd700 !important;
     }
-    
+
     /* Responsive adjustments */
     @media (max-width: 768px) {
         .app-content {
             padding: 30px 20px;
         }
-        
+
         .content-title-two h3 {
             font-size: 26px;
         }
-        
+
         .col-lg-6 {
             max-width: 100%;
         }
-        
+
         .social-login .socialaccount_providers {
             flex-direction: column;
             gap: 10px;
@@ -373,58 +378,197 @@
         <div class="app-box">
             <div class="app-shape-one"></div>
             <div class="app-shape-two"></div>
-            
+
             <div class="row">
                 <div class="col-lg-6">
                     <div class="app-content" style="font-family: 'Vazirmatn', sans-serif;">
-                        <div class="content-title-two">
-                            <span>خوش آمدید</span>
-                            <h3>ساخت حساب کاربری</h3>
-                            <p>به جامعه ما بپیوندید و به امکانات ویژه دسترسی پیدا کنید</p>
+                        <div class="content-title-two text-center mb-4">
+                            <span class="badge-gold">خوش آمدید</span>
+                            <h3 class="title-gold">ثبت نام</h3>
+                            <p class="subtitle-light">به جمع ما بپیوندید</p>
                         </div>
-                        
+
+                        <!-- Password Rules Display -->
+                        <div class="password-rules mb-4">
+                            <p class="rules-title">رمز عبور باید:</p>
+                            <ul class="rules-list">
+                                <li><i class="flaticon-check"></i> حداقل ۸ کاراکتر باشد</li>
+                                <li><i class="flaticon-check"></i> شامل حروف و اعداد باشد</li>
+                                <li><i class="flaticon-check"></i> شبیه اطلاعات شخصی نباشد</li>
+                                <li><i class="flaticon-check"></i> خیلی ساده نباشد (مثل 123456)</li>
+                            </ul>
+                        </div>
+
                         <!-- Sign Up Form -->
                         {% if not SOCIALACCOUNT_ONLY %}
-                            {% url 'account_signup' as action_url %}
-                            <form method="post" action="{{ action_url }}" class="signup-form">
-                                {% csrf_token %}
-                                
-                                {% for field in form %}
-                                    <div class="form-group">
-                                        {{ field }}
-                                        {% if field.errors %}
-                                            <small class="text-danger">{{ field.errors|striptags }}</small>
-                                        {% endif %}
-                                        
-                                        <!-- Django's help text will appear here in white -->
-                                        {% if field.help_text %}
-                                            <small class="form-text text-muted">{{ field.help_text|safe }}</small>
-                                        {% endif %}
-                                    </div>
+                        {% url 'account_signup' as action_url %}
+                        <form method="post" action="{{ action_url }}" class="signup-form">
+                            {% csrf_token %}
+
+                            {% for field in form %}
+                            <div class="form-group mb-3">
+                                {{ field }}
+
+                                {% if field.errors %}
+                                {% for error in field.errors %}
+                                <small class="text-danger">
+                                    {% if "too short" in error|lower or "at least 8 characters" in error|lower %}
+                                    ⚠️ رمز عبور حداقل ۸ کاراکتر نیاز دارد
+                                    {% elif "too common" in error|lower %}
+                                    ⚠️ رمز عبور خیلی ساده است (مثل 12345678)
+                                    {% elif "entirely numeric" in error|lower %}
+                                    ⚠️ رمز عبور نمی‌تواند فقط عدد باشد
+                                    {% elif "too similar" in error|lower %}
+                                    ⚠️ رمز عبور شبیه نام یا ایمیل شماست
+                                    {% elif "password" in error|lower and "match" in error|lower %}
+                                    ⚠️ رمز عبور و تکرار آن یکسان نیست
+                                    {% elif "this field is required" in error|lower %}
+                                    ⚠️ این فیلد الزامی است
+                                    {% elif "valid email" in error|lower %}
+                                    ⚠️ ایمیل معتبر وارد کنید
+                                    {% elif "already exists" in error|lower or "already taken" in error|lower %}
+                                    ⚠️ این ایمیل قبلاً ثبت شده است
+                                    {% else %}
+                                    ⚠️ {{ error }}
+                                    {% endif %}
+                                </small>
                                 {% endfor %}
-                                
-                                {{ redirect_field }}
-                                
-                                <button type="submit" class="btn btn-primary btn-block">
-                                    ثبت نام
-                                </button>
-                            </form>
+                                {% endif %}
+
+                                {% if field.help_text %}
+                                <small class="form-text text-muted">
+                                    {% if "password" in field.name %}
+                                    🔑 رمز عبور قوی انتخاب کنید
+                                    {% else %}
+                                    {{ field.help_text|safe }}
+                                    {% endif %}
+                                </small>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+
+                            {{ redirect_field }}
+
+                            <button type="submit" class="btn-gold w-100 py-3 mb-3">
+                                عضویت
+                            </button>
+                        </form>
                         {% endif %}
 
                         {% if PASSKEY_SIGNUP_ENABLED %}
-                            <hr>
-                            <a href="{{ signup_by_passkey_url }}" class="btn btn-outline-primary btn-block">
-                                ثبت نام با استفاده از کلید عبور
-                            </a>
+                        <div class="divider my-4">
+                            <span class="divider-text">یا</span>
+                        </div>
+
+                        <a href="{{ signup_by_passkey_url }}"
+                            class="btn-outline-gold w-100 py-3 mb-3 d-block text-center">
+                            <i class="flaticon-key"></i> ثبت نام با کلید عبور
+                        </a>
                         {% endif %}
 
-                        <div class="login-link text-center">
-                            <p>
-                                قبلاً حساب کاربری دارید؟ 
-                                <a href="{{ login_url }}" class="text-primary">وارد شوید</a>
+                        <div class="login-link text-center mt-4">
+                            <p class="mb-0">
+                                قبلاً حساب دارید؟
+                                <a href="{{ login_url }}" class="link-gold">وارد شوید</a>
                             </p>
                         </div>
                     </div>
+
+                    <style>
+                        /* Add these styles for password rules */
+                        .password-rules {
+                            background: rgba(255, 215, 0, 0.05);
+                            border: 1px solid #333;
+                            border-radius: 12px;
+                            padding: 15px;
+                            margin-bottom: 20px;
+                        }
+
+                        .rules-title {
+                            color: #FFD700;
+                            font-size: 14px;
+                            font-weight: 600;
+                            margin-bottom: 10px;
+                        }
+
+                        .rules-list {
+                            list-style: none;
+                            padding: 0;
+                            margin: 0;
+                        }
+
+                        .rules-list li {
+                            color: #999;
+                            font-size: 13px;
+                            margin-bottom: 8px;
+                            display: flex;
+                            align-items: center;
+                            gap: 8px;
+                        }
+
+                        .rules-list li i {
+                            color: #FFD700;
+                            font-size: 12px;
+                        }
+
+                        .rules-list li:last-child {
+                            margin-bottom: 0;
+                        }
+
+                        /* Error message styling */
+                        .text-danger {
+                            color: #ff6b6b !important;
+                            font-size: 12px;
+                            margin-top: 5px;
+                            display: block;
+                            background: rgba(255, 107, 107, 0.1);
+                            padding: 5px 10px;
+                            border-radius: 6px;
+                            border-right: 2px solid #ff6b6b;
+                        }
+
+                        /* Help text */
+                        .form-text.text-muted {
+                            color: #666 !important;
+                            font-size: 11px;
+                            margin-top: 5px;
+                            display: block;
+                        }
+
+                        /* Input error state */
+                        .form-group input:invalid {
+                            border-color: #ff6b6b;
+                        }
+
+                        /* Animation for error messages */
+                        @keyframes shake {
+
+                            0%,
+                            100% {
+                                transform: translateX(0);
+                            }
+
+                            10%,
+                            30%,
+                            50%,
+                            70%,
+                            90% {
+                                transform: translateX(-2px);
+                            }
+
+                            20%,
+                            40%,
+                            60%,
+                            80% {
+                                transform: translateX(2px);
+                            }
+                        }
+
+                        .text-danger {
+                            animation: shake 0.5s ease;
+                        }
+                    </style>
+
                 </div>
             </div>
         </div>
@@ -433,12 +577,12 @@
 <!-- Sign Up Section End -->
 
 <!-- Back-to-top button Start -->
-<div class="paginacontainer">	
+<div class="paginacontainer">
     <div class="progress-wrap bounce">
         <svg class="progress-circle svg-content" width="100%" height="100%" viewbox="-1 -1 102 102">
-            <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98" stroke="#ffd700" stroke-width="4" fill="none"/>
+            <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98" stroke="#ffd700" stroke-width="4" fill="none" />
         </svg>
     </div>
-</div> 
+</div>
 <!-- Back-to-top button End -->
 {% endblock content %}

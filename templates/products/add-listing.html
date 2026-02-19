@@ -32,16 +32,30 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label>قیمت</label>
-                            <input type="number" name="price" placeholder="4500 دالر" required>
-                            <div class="error-message">لطفاً قیمت را وارد کنید</div>
+                            <label>مودل</label>
+                            <input type="number" name="year_of_manufacture" placeholder="مثلا 1997" required>
+                            <div class="error-message">لطفاً سال ساخت (مودل) را وارد کنید</div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label>سال ساخت</label>
-                            <input type="number" name="year_of_manufacture" placeholder="مثلا 1997" required>
-                            <div class="error-message">لطفاً سال ساخت را وارد کنید</div>
+                            <label>پلیت</label>
+                            <input type="text" name="palet" placeholder="منفی 6" required>
+                            <div class="error-message">لطفاً پلیت را وارد کنید</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>اسناد</label>
+                            <input type="text" name="asnad" placeholder="سه سال پاک" required>
+                            <div class="error-message">لطفاً سال اسناد را وارد کنید</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>رنگ</label>
+                            <input type="text" name="color" placeholder="سفید" required>
+                            <div class="error-message">لطفاً رنگ را وارد کنید</div>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -58,13 +72,7 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label>نوع سوخت</label>
-                            <select name="fuel_type" required>
-                                <option value="">انتخاب</option>
-                                <option value="petrol">پترول</option>
-                                <option value="diesel">ډیزل</option>
-                                <option value="electric">گازی</option>
-                                <option value="hybrid">هایبرید</option>
-                            </select>
+                            <input type="text" name="fuel_type" placeholder="پطرول و گازی" required>
                             <div class="error-message">لطفاً نوع سوخت را انتخاب کنید</div>
                         </div>
                     </div>
@@ -73,6 +81,14 @@
                             <label>کارکرد (کیلومتر)</label>
                             <input type="number" name="mileage_km" placeholder="مثلا 50000" required>
                             <div class="error-message">لطفاً کارکرد را وارد کنید</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>قیمت</label>
+                            <input type="number" name="price" placeholder="4500 دالر" required>
+                            <div class="error-message">لطفاً قیمت را وارد کنید</div>
                         </div>
                     </div>
 

@@ -306,7 +306,7 @@
 </style>
 
 <!-- Email Verification Section Start -->
-<div class="verification-wrap">
+<div class="verification-wrap" style="font-family: 'Vazirmatn', sans-serif;">
     <div class="container">
         <div class="verification-box">
             <div class="verification-shape-one"></div>
@@ -325,15 +325,15 @@
                         </div>
                         
                         <div class="content-title">
-                            <span>{% trans "Email Verification" %}</span>
-                            <h2>{% trans "Verify Your Email Address" %}</h2>
+                            <span>{% trans "تایید ایمیل" %}</span>
+                            <h2>{% trans "ایمیل خود را تایید کنید" %}</h2>
                         </div>
                         
                         <div class="verification-message">
                             <p>
                                 {% blocktrans %}
-                                We have sent an email to <strong>your email address</strong> for verification. 
-                                Follow the link provided to finalize the signup process.
+                                ما یک ایمیل تاییدی به آدرس ایمیل شما ارسال کرده‌ایم. 
+                                لطفاً روی لینکی که در ایمیل آمده کلیک کنید تا روند ثبت‌نام تکمیل شود.
                                 {% endblocktrans %}
                             </p>
                         </div>
@@ -347,8 +347,8 @@
                                     </svg>
                                 </div>
                                 <div class="info-text">
-                                    <strong>{% trans "Check your inbox:" %}</strong> 
-                                    {% trans "Look for an email from us in your main inbox." %}
+                                    <strong>{% trans "صندوق ورودی خود را بررسی کنید:" %}</strong> 
+                                    {% trans "به دنبال ایمیلی از طرف ما در بخش Inbox بگردید." %}
                                 </div>
                             </div>
                             
@@ -360,8 +360,8 @@
                                     </svg>
                                 </div>
                                 <div class="info-text">
-                                    <strong>{% trans "Check spam folder:" %}</strong> 
-                                    {% trans "If you don't see it, check your spam/junk folder." %}
+                                    <strong>{% trans "پوشه اسپم را بررسی کنید:" %}</strong> 
+                                    {% trans "اگر ایمیل را ندیدید، پوشه Spam یا Junk را نیز بررسی نمایید." %}
                                 </div>
                             </div>
                             
@@ -373,25 +373,25 @@
                                     </svg>
                                 </div>
                                 <div class="info-text">
-                                    <strong>{% trans "Still not received?" %}</strong> 
-                                    {% trans "Contact us if you don't receive it within a few minutes." %}
+                                    <strong>{% trans "هنوز ایمیل را دریافت نکرده‌اید؟" %}</strong> 
+                                    {% trans "اگر تا چند دقیقه ایمیل به دست‌تان نرسید، با ما تماس بگیرید." %}
                                 </div>
                             </div>
                         </div>
                         
                         <div class="action-buttons">
                             <a href="mailto:support@example.com" class="btn-gold">
-                                {% trans "Contact Support" %}
+                                {% trans "تماس با پشتیبانی" %}
                             </a>
                             <a href="{% url 'account_email' %}" class="btn-outline-gold">
-                                {% trans "Resend Email" %}
+                                {% trans "ارسال دوباره ایمیل" %}
                             </a>
                         </div>
                         
                         <div class="help-link">
                             <p>
-                                {% trans "Need help?" %} 
-                                <a href="{% url 'home:dashboard' %}">{% trans "Return to Home" %}</a>
+                                {% trans "به کمک نیاز دارید؟" %} 
+                                <a href="{% url 'home:dashboard' %}">{% trans "بازگشت به صفحه اصلی" %}</a>
                             </p>
                         </div>
                     </div>

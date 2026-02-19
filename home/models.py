@@ -21,6 +21,11 @@ class ContactUs(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        verbose_name = "تماس با ما"
+        verbose_name_plural = "تماس با ما"
+
+
     def __str__(self):
         return self.title if self.title else self.location
     
@@ -63,6 +68,7 @@ class CustomerMessage(models.Model):
     def __str__(self):
         return f"{self.name} - {self.subject}"
     
+    
 class HeroSlider(models.Model):
     title = models.CharField(max_length=40)
     description = models.TextField()
@@ -71,3 +77,24 @@ class HeroSlider(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ ارسال")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="آخرین بروزرسانی")
+
+    class Meta:
+        verbose_name = "سلایدر صفحه اصلی"
+        verbose_name_plural = "سلایدر صفحه اصلی"
+
+
+class SocialMedia(models.Model):
+    facebook = models.URLField(blank=True, null=True, verbose_name="لینک فیسبوک")
+    instagram = models.URLField(blank=True, null=True, verbose_name="لینک اینستاگرام")
+    tiktok = models.URLField(blank=True, null=True, verbose_name="لینک تیک‌تاک")
+    youtube = models.URLField(blank=True, null=True, verbose_name="لینک یوتیوب")
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "شبکه اجتماعی"
+        verbose_name_plural = "شبکه‌های اجتماعی"
+
+    def __str__(self):
+        return "لینک‌های شبکه اجتماعی سایت"

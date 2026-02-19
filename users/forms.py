@@ -3,10 +3,15 @@ from allauth.account.forms import SignupForm, LoginForm
 from django import forms
 from .models import UserPhone
 
-
 class MySignupForm(SignupForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        # Remove default help texts
+        self.fields['password1'].help_text = None
+        self.fields['password2'].help_text = None
+
+        # Optional: placeholders
         self.fields['username'].widget.attrs.update({'placeholder': 'نام کاربری شما'})
         self.fields['email'].widget.attrs.update({'placeholder': 'ایمیل شما'})
         self.fields['password1'].widget.attrs.update({'placeholder': 'رمز عبور'})
