@@ -16,6 +16,266 @@
 </div>
 <!-- Breadcrumb End -->
 
+<!-- Django Messages Section -->
+{% if messages %}
+<div class="messages-wrapper">
+    {% for message in messages %}
+    <div class="message-box message-{{ message.tags }}">
+        <div class="message-icon">
+            {% if message.tags == 'success' %} ✓
+            {% elif message.tags == 'error' %} ⚠️
+            {% elif message.tags == 'warning' %} ⚡
+            {% elif message.tags == 'info' %} ℹ️
+            {% else %} 📢
+            {% endif %}
+        </div>
+        <div class="message-text">
+            {{ message }}
+        </div>
+        <button class="message-close" onclick="this.parentElement.remove()">×</button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<style>
+
+    /* Messages Styles */
+    .messages-wrapper {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9999;
+        width: 90%;
+        max-width: 500px;
+        direction: rtl;
+    }
+
+    .message-box {
+        background: #111;
+        border: 1px solid;
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        animation: slideDown 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    @keyframes slideDown {
+        from {
+            transform: translateY(-20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .message-success {
+        border-color: #ffd700;
+        background: rgba(255, 215, 0, 0.1);
+    }
+
+    .message-error {
+        border-color: #ff6b6b;
+        background: rgba(255, 107, 107, 0.1);
+    }
+
+    .message-warning {
+        border-color: #ffa500;
+        background: rgba(255, 165, 0, 0.1);
+    }
+
+    .message-info {
+        border-color: #3498db;
+        background: rgba(52, 152, 219, 0.1);
+    }
+
+    .message-icon {
+        font-size: 24px;
+        min-width: 30px;
+        text-align: center;
+    }
+
+    .message-success .message-icon {
+        color: #ffd700;
+    }
+
+    .message-error .message-icon {
+        color: #ff6b6b;
+    }
+
+    .message-warning .message-icon {
+        color: #ffa500;
+    }
+
+    .message-info .message-icon {
+        color: #3498db;
+    }
+
+    .message-text {
+        flex: 1;
+        color: #fff;
+        font-size: 14px;
+        line-height: 1.6;
+        text-align: right;
+        font-family: 'Vazirmatn', sans-serif;
+    }
+
+    .message-close {
+        background: none;
+        border: none;
+        color: #666;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 0 5px;
+        transition: color 0.3s ease;
+    }
+
+    .message-close:hover {
+        color: #ffd700;
+    }
+
+    /* Auto dismiss animation */
+    @keyframes fadeOut {
+        from { opacity: 1; transform: translateY(0); }
+        to { opacity: 0; transform: translateY(-10px); }
+    }
+
+    .message-box.fade-out {
+        animation: fadeOut 0.3s ease forwards;
+    }
+
+    .done-wrap {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        box-sizing: border-box;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .done-box {
+        position: relative;
+        overflow: hidden;
+        border-radius: 20px;
+        box-shadow: 0 20px 50px rgba(255, 215, 0, 0.15);
+        max-width: 450px;
+        width: 100%;
+        background: #111;
+        border: 1px solid rgba(255, 215, 0, 0.2);
+    }
+
+    .done-content {
+        padding: 40px 30px;
+        text-align: center;
+        position: relative;
+        z-index: 2;
+    }
+
+    .icon-circle {
+        width: 80px;
+        height: 80px;
+        background: rgba(255, 215, 0, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px;
+        font-size: 40px;
+        color: #ffd700;
+        border: 2px solid #ffd700;
+    }
+
+    h2 {
+        color: #ffd700;
+        font-size: 28px;
+        font-weight: 700;
+        margin: 0 0 10px;
+    }
+
+    .message {
+        color: #fff;
+        font-size: 16px;
+        line-height: 1.8;
+        margin: 20px 0;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        border-right: 3px solid #ffd700;
+        text-align: right;
+    }
+
+    .spam-note {
+        color: #999;
+        font-size: 14px;
+        margin: 15px 0;
+        padding: 10px;
+        background: rgba(255, 215, 0, 0.03);
+        border-radius: 8px;
+    }
+
+    .back-home {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #333;
+    }
+
+    .back-home a {
+        color: #666;
+        text-decoration: none;
+        font-size: 13px;
+        transition: color 0.3s ease;
+    }
+
+    .back-home a:hover {
+        color: #ffd700;
+    }
+
+    @media (max-width: 480px) {
+        .done-content {
+            padding: 30px 20px;
+        }
+        h2 {
+            font-size: 24px;
+        }
+        .messages-wrapper {
+            top: 10px;
+            width: 95%;
+        }
+        .message-box {
+            padding: 12px 16px;
+        }
+    }
+</style>
+
+<!-- Optional: Auto-dismiss messages after 5 seconds -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto dismiss messages after 5 seconds
+    const messages = document.querySelectorAll('.message-box');
+    messages.forEach(function(message) {
+        setTimeout(function() {
+            message.classList.add('fade-out');
+            setTimeout(function() {
+                if (message.parentElement) {
+                    message.remove();
+                }
+            }, 300);
+        }, 5000);
+    });
+});
+</script>
+<!-- Breadcrumb End -->
+
 <!-- Cart section start -->
 <style>
     .cart-wrap {

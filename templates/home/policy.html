@@ -1,0 +1,333 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Breadcrumb Start -->
+<div class="breadcrumb-wrap bg-f br-1" style="font-family: 'Vazirmatn', sans-serif;">
+    <div class="container">
+        <div class="breadcrumb-title">
+            <div class="section-title text-center mb-5">
+                <h2>قوانین <span class="text-danger">درج آگهی</span></h2>
+                <p class="text-white">لطفاً قبل از درج آگهی، قوانین زیر را مطالعه فرمایید</p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+
+<!-- Django Messages Section -->
+{% if messages %}
+<div class="messages-wrapper">
+    {% for message in messages %}
+    <div class="message-box message-{{ message.tags }}">
+        <div class="message-icon">
+            {% if message.tags == 'success' %} ✓
+            {% elif message.tags == 'error' %} ⚠️
+            {% elif message.tags == 'warning' %} ⚡
+            {% elif message.tags == 'info' %} ℹ️
+            {% else %} 📢
+            {% endif %}
+        </div>
+        <div class="message-text">
+            {{ message }}
+        </div>
+        <button class="message-close" onclick="this.parentElement.remove()">×</button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Policy Section Start -->
+<div class="policy-section pt-100 pb-70" style="font-family: 'Vazirmatn', sans-serif;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+               
+                
+                <div class="policy-list">
+                    {% for policy in policies %}
+                    <div class="policy-item card mb-4 border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-start">
+                                <div class="policy-icon me-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="#fd0d0d" viewBox="0 0 24 24">
+                                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                                    </svg>
+                                </div>
+                                <div class="policy-content flex-grow-1">
+                                    <h4 class="mb-3">قانون {{ forloop.counter }}: {{ policy.title }}</h4>
+                                    <p class="text-muted mb-0">{{ policy.content|linebreaks }}</p>
+                                    <small class="text-muted mt-2 d-block">تاریخ انتشار: {{ policy.created_at|date:"Y/m/d" }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="alert alert-info text-center">
+                        هیچ قانونی یافت نشد.
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Policy Section End -->
+
+<!-- Back-to-top button Start -->
+<div class="paginacontainer">
+    <div class="progress-wrap bounce">
+        <svg class="progress-circle svg-content" width="100%" height="100%" viewbox="-1 -1 102 102">
+            <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"></path>
+        </svg>
+    </div>
+</div>
+<!-- Back-to-top button End -->
+
+<style>
+    /* Messages Styles */
+    .messages-wrapper {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9999;
+        width: 90%;
+        max-width: 500px;
+        direction: rtl;
+    }
+
+    .message-box {
+        background: #111;
+        border: 1px solid;
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        animation: slideDown 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    @keyframes slideDown {
+        from {
+            transform: translateY(-20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .message-success {
+        border-color: #ffd700;
+        background: rgba(255, 215, 0, 0.1);
+    }
+
+    .message-error {
+        border-color: #ff6b6b;
+        background: rgba(255, 107, 107, 0.1);
+    }
+
+    .message-warning {
+        border-color: #ffa500;
+        background: rgba(255, 165, 0, 0.1);
+    }
+
+    .message-info {
+        border-color: #3498db;
+        background: rgba(52, 152, 219, 0.1);
+    }
+
+    .message-icon {
+        font-size: 24px;
+        min-width: 30px;
+        text-align: center;
+    }
+
+    .message-success .message-icon {
+        color: #ffd700;
+    }
+
+    .message-error .message-icon {
+        color: #ff6b6b;
+    }
+
+    .message-warning .message-icon {
+        color: #ffa500;
+    }
+
+    .message-info .message-icon {
+        color: #3498db;
+    }
+
+    .message-text {
+        flex: 1;
+        color: #fff;
+        font-size: 14px;
+        line-height: 1.6;
+        text-align: right;
+        font-family: 'Vazirmatn', sans-serif;
+    }
+
+    .message-close {
+        background: none;
+        border: none;
+        color: #666;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 0 5px;
+        transition: color 0.3s ease;
+    }
+
+    .message-close:hover {
+        color: #ffd700;
+    }
+
+    /* Auto dismiss animation */
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+    }
+
+    .message-box.fade-out {
+        animation: fadeOut 0.3s ease forwards;
+    }
+
+    /* Policy Section Styles */
+    .policy-section {
+        direction: rtl;
+        background: #f8f9fa;
+        min-height: 50vh;
+    }
+
+    .section-title h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #ffffff;
+    }
+
+    .section-title h2 span {
+        color: #fd0d0d;
+        border-bottom: 3px solid #fd0d0d;
+        padding-bottom: 5px;
+    }
+
+    .section-title p {
+        font-size: 1.1rem;
+        color: #ffffff;
+        margin-top: 15px;
+    }
+
+    .policy-item {
+        border-radius: 15px !important;
+        transition: all 0.3s ease;
+        border-right: 4px solid #fd0d0d !important;
+        background: white;
+    }
+
+    .policy-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(253, 13, 13, 0.1) !important;
+    }
+
+    .policy-icon {
+        background: rgba(253, 13, 13, 0.1);
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .policy-item:hover .policy-icon {
+        background: #fd0d0d;
+    }
+
+    .policy-item:hover .policy-icon svg {
+        fill: white !important;
+    }
+
+    .policy-icon svg {
+        transition: all 0.3s ease;
+    }
+
+    .policy-content h4 {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #333;
+        border-bottom: 2px dashed #eee;
+        padding-bottom: 10px;
+    }
+
+    .policy-content p {
+        font-size: 1rem;
+        line-height: 1.8;
+        color: #555;
+    }
+
+    @media (max-width: 768px) {
+        .policy-item .d-flex {
+            flex-direction: column;
+        }
+        
+        .policy-icon {
+            margin-bottom: 15px;
+            margin-left: 0;
+            width: 50px;
+            height: 50px;
+        }
+        
+        .policy-icon svg {
+            width: 30px;
+            height: 30px;
+        }
+        
+        .section-title h2 {
+            font-size: 2rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .messages-wrapper {
+            top: 10px;
+            width: 95%;
+        }
+
+        .message-box {
+            padding: 12px 16px;
+        }
+    }
+</style>
+
+<!-- Optional: Auto-dismiss messages after 5 seconds -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Auto dismiss messages after 5 seconds
+        const messages = document.querySelectorAll('.message-box');
+        messages.forEach(function (message) {
+            setTimeout(function () {
+                message.classList.add('fade-out');
+                setTimeout(function () {
+                    if (message.parentElement) {
+                        message.remove();
+                    }
+                }, 300);
+            }, 5000);
+        });
+    });
+</script>
+
+{% endblock %}

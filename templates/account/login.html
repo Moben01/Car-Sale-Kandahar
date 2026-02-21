@@ -3,21 +3,26 @@
 {% load allauth i18n %}
 
 {% block head_title %}
-    {% trans "Sign In" %}
+{% trans "Sign In" %}
 {% endblock head_title %}
 
 {% block content %}
 <style>
     /* Hide header and footer */
-    header, footer, .main-header, .site-header, .main-footer, .site-footer {
+    header,
+    footer,
+    .main-header,
+    .site-header,
+    .main-footer,
+    .site-footer {
         display: none !important;
     }
-    
+
     /* Center the content with black/golden theme */
     body {
         background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
     }
-    
+
     .login-wrap {
         min-height: 100vh;
         display: flex;
@@ -25,7 +30,7 @@
         justify-content: center;
         padding: 40px 0;
     }
-    
+
     .login-box {
         position: relative;
         overflow: hidden;
@@ -36,7 +41,7 @@
         background: #111;
         border: 1px solid rgba(255, 215, 0, 0.2);
     }
-    
+
     /* Decorative elements */
     .login-shape-one,
     .login-shape-two {
@@ -44,7 +49,7 @@
         opacity: 0.05;
         pointer-events: none;
     }
-    
+
     .login-shape-one {
         top: -50px;
         left: -50px;
@@ -53,7 +58,7 @@
         background: radial-gradient(circle, #ffd700 0%, transparent 70%);
         border-radius: 50%;
     }
-    
+
     .login-shape-two {
         bottom: -50px;
         right: -50px;
@@ -62,28 +67,28 @@
         background: radial-gradient(circle, #ffd700 0%, transparent 70%);
         border-radius: 50%;
     }
-    
+
     .row {
         justify-content: center;
     }
-    
+
     .col-lg-6 {
         flex: 0 0 100%;
         max-width: 500px;
         margin: 0 auto;
     }
-    
+
     .login-content {
         padding: 40px;
         text-align: center;
         position: relative;
         z-index: 2;
     }
-    
+
     .content-title-two {
         margin-bottom: 30px;
     }
-    
+
     .content-title-two span {
         color: #ffd700;
         font-size: 16px;
@@ -94,7 +99,7 @@
         margin-bottom: 15px;
         text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
     }
-    
+
     .content-title-two h3 {
         font-size: 32px;
         font-weight: 700;
@@ -103,7 +108,7 @@
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         letter-spacing: 1px;
     }
-    
+
     .content-title-two h3::after {
         content: '';
         display: block;
@@ -112,22 +117,22 @@
         background: linear-gradient(90deg, transparent, #ffd700, transparent);
         margin: 20px auto 0;
     }
-    
+
     .content-title-two p {
         color: #999;
         font-size: 16px;
     }
-    
+
     /* Form Styles */
     .login-form {
         margin-top: 20px;
     }
-    
+
     .login-form .form-group {
         margin-bottom: 20px;
         text-align: left;
     }
-    
+
     .login-form input[type="text"],
     .login-form input[type="email"],
     .login-form input[type="password"] {
@@ -140,18 +145,18 @@
         background-color: #222;
         color: #fff;
     }
-    
+
     .login-form input::placeholder {
         color: #666;
     }
-    
+
     .login-form input:focus {
         outline: none;
         border-color: #ffd700;
         background-color: #2a2a2a;
         box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.1);
     }
-    
+
     .login-form .btn-primary {
         background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%);
         color: #000;
@@ -168,13 +173,13 @@
         margin-top: 10px;
         box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
     }
-    
+
     .login-form .btn-primary:hover {
         transform: translateY(-2px);
         box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
         background: linear-gradient(135deg, #ffd700 0%, #daa520 100%);
     }
-    
+
     .login-form .btn-outline-primary {
         background: transparent;
         color: #ffd700;
@@ -190,14 +195,14 @@
         width: 100%;
         text-align: center;
     }
-    
+
     .login-form .btn-outline-primary:hover {
         background: #ffd700;
         color: #000;
         transform: translateY(-2px);
         box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
     }
-    
+
     .login-form .text-danger {
         color: #ff6b6b;
         font-size: 13px;
@@ -205,7 +210,7 @@
         display: block;
         padding-left: 5px;
     }
-    
+
     .login-form .form-text {
         color: #999;
         font-size: 12px;
@@ -213,7 +218,7 @@
         display: block;
         padding-left: 5px;
     }
-    
+
     /* Remember me and forgot password */
     .form-options {
         display: flex;
@@ -222,72 +227,72 @@
         margin: 20px 0;
         color: #999;
     }
-    
+
     .remember-me {
         display: flex;
         align-items: center;
         gap: 8px;
     }
-    
+
     .remember-me input[type="checkbox"] {
         width: 18px;
         height: 18px;
         accent-color: #ffd700;
         cursor: pointer;
     }
-    
+
     .remember-me label {
         cursor: pointer;
         font-size: 14px;
     }
-    
+
     .forgot-password a {
         color: #ffd700;
         text-decoration: none;
         font-size: 14px;
         transition: color 0.3s ease;
     }
-    
+
     .forgot-password a:hover {
         color: #fff;
         text-decoration: underline;
     }
-    
+
     .signup-link {
         margin-top: 25px;
         padding-top: 20px;
         border-top: 2px dashed #333;
     }
-    
+
     .signup-link p {
         color: #999;
         font-size: 15px;
     }
-    
+
     .signup-link a {
         color: #ffd700;
         text-decoration: none;
         font-weight: 600;
         transition: color 0.3s ease;
     }
-    
+
     .signup-link a:hover {
         color: #fff;
         text-decoration: underline;
     }
-    
+
     /* Social Login Styles */
     .social-login {
         margin-top: 30px;
     }
-    
+
     .social-login p {
         color: #999;
         font-size: 14px;
         margin-bottom: 15px;
         position: relative;
     }
-    
+
     .social-login p::before,
     .social-login p::after {
         content: "";
@@ -297,15 +302,15 @@
         height: 1px;
         background: #333;
     }
-    
+
     .social-login p::before {
         left: 0;
     }
-    
+
     .social-login p::after {
         right: 0;
     }
-    
+
     .social-login .socialaccount_providers {
         list-style: none;
         padding: 0;
@@ -314,12 +319,12 @@
         justify-content: center;
         gap: 15px;
     }
-    
+
     .social-login .socialaccount_providers li {
         display: inline-block;
         flex: 1;
     }
-    
+
     .social-login .socialaccount_providers a {
         display: flex;
         align-items: center;
@@ -334,7 +339,7 @@
         font-weight: 500;
         gap: 8px;
     }
-    
+
     .social-login .socialaccount_providers a:hover {
         background: #2a2a2a;
         border-color: #ffd700;
@@ -342,37 +347,37 @@
         box-shadow: 0 5px 15px rgba(255, 215, 0, 0.2);
         color: #ffd700;
     }
-    
+
     hr {
         margin: 25px 0;
         border: 0;
         border-top: 2px solid #333;
     }
-    
+
     /* Progress circle for back-to-top */
     .progress-wrap svg path {
         stroke: #ffd700 !important;
     }
-    
+
     /* Responsive adjustments */
     @media (max-width: 768px) {
         .login-content {
             padding: 30px 20px;
         }
-        
+
         .content-title-two h3 {
             font-size: 26px;
         }
-        
+
         .col-lg-6 {
             max-width: 100%;
         }
-        
+
         .social-login .socialaccount_providers {
             flex-direction: column;
             gap: 10px;
         }
-        
+
         .form-options {
             flex-direction: column;
             gap: 15px;
@@ -387,7 +392,276 @@
         <div class="login-box">
             <div class="login-shape-one"></div>
             <div class="login-shape-two"></div>
-            
+
+            <!-- Django Messages Section -->
+            {% if messages %}
+            <div class="messages-wrapper">
+                {% for message in messages %}
+                <div class="message-box message-{{ message.tags }}">
+                    <div class="message-icon">
+                        {% if message.tags == 'success' %} ✓
+                        {% elif message.tags == 'error' %} ⚠️
+                        {% elif message.tags == 'warning' %} ⚡
+                        {% elif message.tags == 'info' %} ℹ️
+                        {% else %} 📢
+                        {% endif %}
+                    </div>
+                    <div class="message-text">
+                        {{ message }}
+                    </div>
+                    <button class="message-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <style>
+                /* Messages Styles */
+                .messages-wrapper {
+                    position: fixed;
+                    top: 20px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    z-index: 9999;
+                    width: 90%;
+                    max-width: 500px;
+                    direction: rtl;
+                }
+
+                .message-box {
+                    background: #111;
+                    border: 1px solid;
+                    border-radius: 12px;
+                    padding: 16px 20px;
+                    margin-bottom: 10px;
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                    animation: slideDown 0.3s ease;
+                    backdrop-filter: blur(10px);
+                }
+
+                @keyframes slideDown {
+                    from {
+                        transform: translateY(-20px);
+                        opacity: 0;
+                    }
+
+                    to {
+                        transform: translateY(0);
+                        opacity: 1;
+                    }
+                }
+
+                .message-success {
+                    border-color: #ffd700;
+                    background: rgba(255, 215, 0, 0.1);
+                }
+
+                .message-error {
+                    border-color: #ff6b6b;
+                    background: rgba(255, 107, 107, 0.1);
+                }
+
+                .message-warning {
+                    border-color: #ffa500;
+                    background: rgba(255, 165, 0, 0.1);
+                }
+
+                .message-info {
+                    border-color: #3498db;
+                    background: rgba(52, 152, 219, 0.1);
+                }
+
+                .message-icon {
+                    font-size: 24px;
+                    min-width: 30px;
+                    text-align: center;
+                }
+
+                .message-success .message-icon {
+                    color: #ffd700;
+                }
+
+                .message-error .message-icon {
+                    color: #ff6b6b;
+                }
+
+                .message-warning .message-icon {
+                    color: #ffa500;
+                }
+
+                .message-info .message-icon {
+                    color: #3498db;
+                }
+
+                .message-text {
+                    flex: 1;
+                    color: #fff;
+                    font-size: 14px;
+                    line-height: 1.6;
+                    text-align: right;
+                    font-family: 'Vazirmatn', sans-serif;
+                }
+
+                .message-close {
+                    background: none;
+                    border: none;
+                    color: #666;
+                    font-size: 24px;
+                    cursor: pointer;
+                    padding: 0 5px;
+                    transition: color 0.3s ease;
+                }
+
+                .message-close:hover {
+                    color: #ffd700;
+                }
+
+                /* Auto dismiss animation */
+                @keyframes fadeOut {
+                    from {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+
+                    to {
+                        opacity: 0;
+                        transform: translateY(-10px);
+                    }
+                }
+
+                .message-box.fade-out {
+                    animation: fadeOut 0.3s ease forwards;
+                }
+
+                .done-wrap {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 20px;
+                    box-sizing: border-box;
+                    height: 100%;
+                    overflow: hidden;
+                }
+
+                .done-box {
+                    position: relative;
+                    overflow: hidden;
+                    border-radius: 20px;
+                    box-shadow: 0 20px 50px rgba(255, 215, 0, 0.15);
+                    max-width: 450px;
+                    width: 100%;
+                    background: #111;
+                    border: 1px solid rgba(255, 215, 0, 0.2);
+                }
+
+                .done-content {
+                    padding: 40px 30px;
+                    text-align: center;
+                    position: relative;
+                    z-index: 2;
+                }
+
+                .icon-circle {
+                    width: 80px;
+                    height: 80px;
+                    background: rgba(255, 215, 0, 0.1);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 auto 25px;
+                    font-size: 40px;
+                    color: #ffd700;
+                    border: 2px solid #ffd700;
+                }
+
+                h2 {
+                    color: #ffd700;
+                    font-size: 28px;
+                    font-weight: 700;
+                    margin: 0 0 10px;
+                }
+
+                .message {
+                    color: #fff;
+                    font-size: 16px;
+                    line-height: 1.8;
+                    margin: 20px 0;
+                    padding: 20px;
+                    background: rgba(255, 255, 255, 0.05);
+                    border-radius: 12px;
+                    border-right: 3px solid #ffd700;
+                    text-align: right;
+                }
+
+                .spam-note {
+                    color: #999;
+                    font-size: 14px;
+                    margin: 15px 0;
+                    padding: 10px;
+                    background: rgba(255, 215, 0, 0.03);
+                    border-radius: 8px;
+                }
+
+                .back-home {
+                    margin-top: 30px;
+                    padding-top: 20px;
+                    border-top: 1px solid #333;
+                }
+
+                .back-home a {
+                    color: #666;
+                    text-decoration: none;
+                    font-size: 13px;
+                    transition: color 0.3s ease;
+                }
+
+                .back-home a:hover {
+                    color: #ffd700;
+                }
+
+                @media (max-width: 480px) {
+                    .done-content {
+                        padding: 30px 20px;
+                    }
+
+                    h2 {
+                        font-size: 24px;
+                    }
+
+                    .messages-wrapper {
+                        top: 10px;
+                        width: 95%;
+                    }
+
+                    .message-box {
+                        padding: 12px 16px;
+                    }
+                }
+            </style>
+
+            <!-- Optional: Auto-dismiss messages after 5 seconds -->
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    // Auto dismiss messages after 5 seconds
+                    const messages = document.querySelectorAll('.message-box');
+                    messages.forEach(function (message) {
+                        setTimeout(function () {
+                            message.classList.add('fade-out');
+                            setTimeout(function () {
+                                if (message.parentElement) {
+                                    message.remove();
+                                }
+                            }, 300);
+                        }, 5000);
+                    });
+                });
+            </script>
+            <!-- Breadcrumb End -->
             <div class="row">
                 <div class="col-lg-6">
                     <div class="login-content" style="font-family: 'Vazirmatn', sans-serif;">
@@ -396,51 +670,234 @@
                             <h3>ورود به حساب کاربری</h3>
                             <p>به حساب کاربری خود وارد شوید و سفر خود را ادامه دهید</p>
                         </div>
-                        
-                        <!-- Login Form -->
-                        {% if not SOCIALACCOUNT_ONLY %}
-                            {% url 'account_login' as action_url %}
-                            <form method="post" action="{{ action_url }}" class="login-form">
-                                {% csrf_token %}
-                                
-                                {% for field in form %}
-                                    {% if field.name != 'remember' %}
-                                        <div class="form-group">
-                                            {{ field }}
-                                            {% if field.errors %}
-                                                <small class="text-danger">{{ field.errors|striptags }}</small>
-                                            {% endif %}
-                                            {% if field.help_text %}
-                                                <small class="form-text text-muted">{{ field.help_text }}</small>
-                                            {% endif %}
-                                        </div>
-                                    {% endif %}
-                                {% endfor %}
-                                
-                                <!-- Remember me and Forgot password -->
-                                <div class="form-options">
-                                    {% if form.remember %}
-                                        <div class="remember-me">
-                                            {{ form.remember }}
-                                            <label for="{{ form.remember.id_for_label }}">مرا به خاطر بسپار</label>
-                                        </div>
-                                    {% endif %}
-                                    <div class="forgot-password">
-                                        <a href="{% url 'account_reset_password' %}">رمز عبور را فراموش کرده‌اید؟</a>
-                                    </div>
-                                </div>
-                                
-                                {{ redirect_field }}
-                                
-                                <button type="submit" class="btn btn-primary btn-block">
-                                    ورود
-                                </button>
-                            </form>
-                        {% endif %}
 
+                        <!-- Login Form -->
+                        <form method="post" class="login-form" action="{% url 'users:login' %}">
+                            {% csrf_token %}
+
+                            <!-- Phone field (visible by default) -->
+                            <div id="phone-field">
+                                <input type="number" name="phone_number" placeholder="شماره تماس" required
+                                    id="phoneInput">
+                            </div>
+
+                            <!-- Username field (hidden by default) -->
+                            <div id="username-field" style="display: none;">
+                                <input type="text" name="username" placeholder="نام کاربری" id="usernameInput">
+                            </div>
+
+                            <input type="password" name="password" placeholder="رمز عبور" required>
+
+                            <!-- Checkbox for toggling between username and phone -->
+                            <div
+                                style="display: flex; align-items: center; justify-content: flex-start; gap: 8px; margin: 15px 0 10px 0;">
+                                <input type="checkbox" id="loginWithNameCheckbox" onclick="toggleFields()"
+                                    style="width: 18px; height: 18px; cursor: pointer;">
+                                <label for="loginWithNameCheckbox"
+                                    style="cursor: pointer; font-size: 14px; color: #ffffff;">ورود با نام کاربری</label>
+                            </div>
+
+                            <button type="submit" class="btn-gold w-100 py-2 mb-4 mt-2" style="font-size: 16px;">
+                                ورود
+                            </button>
+
+                            <style>
+                                .btn-gold {
+                                    position: relative;
+                                    padding: 8px 20px !important;
+                                    /* Smaller padding */
+                                    font-size: 16px !important;
+                                    /* Smaller font */
+                                    font-weight: 600;
+                                    color: white;
+                                    background: linear-gradient(270deg,
+                                            #fd0d0d,
+                                            /* Red */
+                                            #ff6b6b,
+                                            /* Light Red */
+                                            #ffd700,
+                                            /* Gold */
+                                            #4a90e2,
+                                            /* Blue */
+                                            #50c878,
+                                            /* Green */
+                                            #fd0d0d
+                                            /* Back to Red */
+                                        );
+                                    background-size: 500% 100%;
+                                    /* For 5 colors */
+                                    border: none;
+                                    border-radius: 50px;
+                                    cursor: pointer;
+                                    animation: colorChange 5s ease infinite;
+                                    /* 5 seconds for 5 colors */
+                                    box-shadow: 0 4px 12px rgba(253, 13, 13, 0.2);
+                                    letter-spacing: 0.5px;
+                                    transition: all 0.3s ease;
+                                    border: 1px solid transparent;
+                                }
+
+                                /* 5-color animation */
+                                @keyframes colorChange {
+                                    0% {
+                                        background-position: 0% 50%;
+                                    }
+
+                                    20% {
+                                        background-position: 25% 50%;
+                                        /* First color transition */
+                                    }
+
+                                    40% {
+                                        background-position: 50% 50%;
+                                        /* Second color transition */
+                                    }
+
+                                    60% {
+                                        background-position: 75% 50%;
+                                        /* Third color transition */
+                                    }
+
+                                    80% {
+                                        background-position: 100% 50%;
+                                        /* Fourth color transition */
+                                    }
+
+                                    100% {
+                                        background-position: 0% 50%;
+                                        /* Back to first color */
+                                    }
+                                }
+
+                                /* Shine effect */
+                                .btn-gold::before {
+                                    content: '';
+                                    position: absolute;
+                                    top: 0;
+                                    left: -100%;
+                                    width: 100%;
+                                    height: 100%;
+                                    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+                                    transition: left 0.5s ease;
+                                    animation: shine 3s ease-in-out infinite;
+                                }
+
+                                @keyframes shine {
+                                    0% {
+                                        left: -100%;
+                                        opacity: 0;
+                                    }
+
+                                    50% {
+                                        opacity: 0.7;
+                                    }
+
+                                    100% {
+                                        left: 200%;
+                                        opacity: 0;
+                                    }
+                                }
+
+                                /* Hover effect */
+                                .btn-gold:hover {
+                                    transform: translateY(-2px) scale(1.01);
+                                    background: #dc3545;
+                                    /* Danger color on hover */
+                                    box-shadow: 0 6px 18px rgba(220, 53, 69, 0.4);
+                                    animation: none;
+                                    /* Stop color animation on hover */
+                                    border-color: #ffd700;
+                                    color: white;
+                                }
+
+                                .btn-gold:hover::before {
+                                    animation: shine 1.5s ease-in-out infinite;
+                                }
+
+                                /* Active effect */
+                                .btn-gold:active {
+                                    transform: translateY(1px) scale(0.98);
+                                    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+                                }
+
+                                /* Focus state */
+                                .btn-gold:focus {
+                                    outline: none;
+                                    box-shadow: 0 0 0 3px rgba(253, 13, 13, 0.2);
+                                }
+
+                                /* Responsive */
+                                @media (max-width: 768px) {
+                                    .btn-gold {
+                                        font-size: 14px !important;
+                                        padding: 6px 15px !important;
+                                    }
+                                }
+
+                                /* Add some spacing for the input fields */
+                                .login-form input[type="text"],
+                                .login-form input[type="number"],
+                                .login-form input[type="password"] {
+                                    width: 100%;
+                                    padding: 10px;
+                                    margin-bottom: 15px;
+                                    border: 1px solid #ddd;
+                                    border-radius: 8px;
+                                    font-size: 14px;
+                                }
+
+                                .login-form input:focus {
+                                    outline: none;
+                                    border-color: #fd0d0d;
+                                    box-shadow: 0 0 0 2px rgba(253, 13, 13, 0.1);
+                                }
+                            </style>
+                        </form>
+
+                        <script>
+                            function toggleFields() {
+                                const checkbox = document.getElementById('loginWithNameCheckbox');
+                                const usernameField = document.getElementById('username-field');
+                                const phoneField = document.getElementById('phone-field');
+                                const usernameInput = document.getElementById('usernameInput');
+                                const phoneInput = document.getElementById('phoneInput');
+
+                                if (checkbox.checked) {
+                                    // Show username, hide phone
+                                    usernameField.style.display = 'block';
+                                    phoneField.style.display = 'none';
+
+                                    // Update required attributes
+                                    usernameInput.required = true;
+                                    phoneInput.required = false;
+                                    phoneInput.removeAttribute('required');
+                                } else {
+                                    // Show phone, hide username
+                                    usernameField.style.display = 'none';
+                                    phoneField.style.display = 'block';
+
+                                    // Update required attributes
+                                    usernameInput.required = false;
+                                    usernameInput.removeAttribute('required');
+                                    phoneInput.required = true;
+                                }
+                            }
+
+                            // Initialize on page load
+                            document.addEventListener('DOMContentLoaded', function () {
+                                const checkbox = document.getElementById('loginWithNameCheckbox');
+                                const usernameField = document.getElementById('username-field');
+                                const phoneField = document.getElementById('phone-field');
+
+                                // Make sure initial state is correct (phone visible, username hidden)
+                                checkbox.checked = false;
+                                usernameField.style.display = 'none';
+                                phoneField.style.display = 'block';
+                            });
+                        </script>
                         <div class="signup-link text-center">
                             <p>
-                                حساب کاربری ندارید؟ 
+                                حساب کاربری ندارید؟
                                 <a href="{{ signup_url }}" class="text-primary">ثبت نام کنید</a>
                             </p>
                         </div>
@@ -453,12 +910,12 @@
 <!-- Login Section End -->
 
 <!-- Back-to-top button Start -->
-<div class="paginacontainer">	
+<div class="paginacontainer">
     <div class="progress-wrap bounce">
         <svg class="progress-circle svg-content" width="100%" height="100%" viewbox="-1 -1 102 102">
-            <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98" stroke="#ffd700" stroke-width="4" fill="none"/>
+            <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98" stroke="#ffd700" stroke-width="4" fill="none" />
         </svg>
     </div>
-</div> 
+</div>
 <!-- Back-to-top button End -->
 {% endblock content %}

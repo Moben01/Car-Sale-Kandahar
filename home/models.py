@@ -98,3 +98,19 @@ class SocialMedia(models.Model):
 
     def __str__(self):
         return "لینک‌های شبکه اجتماعی سایت"
+    
+    
+class ListingPolicy(models.Model):
+    title = models.CharField(max_length=200, verbose_name="عنوان قانون")
+    content = models.TextField(verbose_name="متن قانون")
+    is_active = models.BooleanField(default=True, verbose_name="فعال")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "قانون درج آگهی"
+        verbose_name_plural = "قوانین درج آگهی"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.title

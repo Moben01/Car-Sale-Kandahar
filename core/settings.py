@@ -172,10 +172,10 @@ EMAIL_HOST_PASSWORD = 'jxioczmcnxsktlao'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
-ACCOUNT_FORMS = {
-    'signup': 'users.forms.MySignupForm',
-    'login': 'users.forms.MyLoginForm',
-}
+# ACCOUNT_FORMS = {
+#     'signup': 'users.forms.MySignupForm',
+#     'login': 'users.forms.MyLoginForm',
+# }
 
 
 JAZZMIN_SETTINGS = {
@@ -198,3 +198,5 @@ JAZZMIN_SETTINGS = {
     "site_logo": "static/assets/img/no.png",
     "login_logo": "static/assets/img/no.png",
 }
+
+AUTH_USER_MODEL = 'users.CustomUser'

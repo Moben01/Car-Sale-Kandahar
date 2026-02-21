@@ -55,3 +55,5 @@ class HeroSliderAdmin(admin.ModelAdmin):
 class SocialMediaAdmin(admin.ModelAdmin):
     list_display = ('facebook', 'instagram', 'tiktok', 'youtube', 'created_at', 'updated_at')
     readonly_fields = ('created_at', 'updated_at')
+
+admin.site.register(ListingPolicy)

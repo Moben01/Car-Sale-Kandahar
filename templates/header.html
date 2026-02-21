@@ -38,7 +38,7 @@
                                     <span>شماره تماس:</span><a href="tel:{{ contact_info.phone_number }}">{{ contact_info.phone_number }}</a>
                                 </li>
                                 <li>
-                                    <span> ساعات کار:</span>{{ contact_info.opening_hours }}
+                                    <span> ساعات کاری:</span>{{ contact_info.opening_hours }}
                                 </li>
                                 <li>
                                     <span>موقعیت:</span> {{ contact_info.location }}
@@ -52,7 +52,7 @@
                                 {% if request.user.is_authenticated %}
                                     <a href="{% url 'users:my_account' request.user.id %}">پروفایل من</a>
                                 {% else %}
-                                    <a href="{% url 'account_login' %}">پروفایل من</a>
+                                    <a href="{% url 'account_login' %}"> داخل شدن </a>
                                 {% endif %}
                             </div>
                             <div class="social-link">
@@ -210,31 +210,41 @@
                             <li class="nav-item">
                                 <a href="{% url 'home:contact_us' %}" class="nav-link">تماس</a>
                             </li>
-                        <li class="nav-item">
-    <a href="{% url 'products:my_wishlist' %}" class="nav-link d-flex align-items-center gap-1">
-        <svg xmlns="http://www.w3.org/2000/svg" 
-             viewBox="0 0 24 24" 
-             width="20" height="20" 
-             fill="#fd0d0d">
-            <path d="m12 21.35l-1.45-1.32C5.4 15.36 2 12.27 2 8.5
-                     C2 5.41 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.08
-                     C13.09 3.81 14.76 3 16.5 3
-                     C19.58 3 22 5.41 22 8.5
-                     c0 3.77-3.4 6.86-8.55 11.53z"/>
-        </svg>
-        <span>علاقمندی‌های من</span>
-    </a>
-</li>
+                            <li class="nav-item">
+                                <a href="{% url 'home:policy' %}" class="nav-link">قوانین</a>
+                            </li>
 
                             <li class="nav-item d-lg-none">
-                                <a href="add-listing.html" class="btn-two">افزودن لیست</a>
+                                <a href="{% url 'products:add_listing' %}" class="btn-two">افزودن لیست</a>
                             </li>
                         </ul>
                         <div class="other-options md-none">
                             {% if user.is_authenticated %}
                                 <div class="option-item">
-                                    <a href="{% url 'users:profile' request.user.id %}" class="compare-btn"><span class="sm-text">موتر های من</span></a>
+                                    <div class="dropdown">
+                                        <a href="#" class="compare-btn dropdown-toggle" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="sm-text">اکانت شما</span>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+                                            <li><a class="dropdown-item" href="{% url 'users:profile' request.user.id %}">موتر های من</a></li>
+                                            <li><a class="dropdown-item" href="{% url 'products:my_wishlist' %}">
+                                                علاقمندی‌های من
+                                                <svg xmlns="http://www.w3.org/2000/svg" 
+                                                    viewBox="0 0 24 24" 
+                                                    width="20" height="20" 
+                                                    fill="#fd0d0d"
+                                                    style="margin-right: 8px; vertical-align: middle;">
+                                                    <path d="m12 21.35l-1.45-1.32C5.4 15.36 2 12.27 2 8.5
+                                                            C2 5.41 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.08
+                                                            C13.09 3.81 14.76 3 16.5 3
+                                                            C19.58 3 22 5.41 22 8.5
+                                                            c0 3.77-3.4 6.86-8.55 11.53z"/>
+                                                </svg>
+                                            </a></li>
+                                        </ul>
+                                    </div>
                                 </div>
+                                
                                 <div class="option-item">
                                     <a class="shopcart" href="{% url 'account_logout' %}"><span class="sm-text">خروج</span></a>
                                 </div>
@@ -256,11 +266,22 @@
                     </div>
                 </nav>
                 <div class="mobile-bar-wrap">
-                    <a href="compare.html" class="compare-btn d-lg-none"><i class="flaticon-compare"></i><span class="cart-count">۱۰</span></a>
-                    <a class="shopcart d-lg-none" href="{% url 'users:profile' request.user.id %}">
-                        <i class="flaticon-car"></i>
-                        <span class="cart-count">{{ car_count }}</span>
-                    </a>
+                    {% if user.is_authenticated %}
+                        <a href="wishlist.html" class="compare-btn d-lg-none">
+                            <i class="flaticon-heart"></i>
+                            <span class="cart-count">3</span>
+                        </a>
+                        <a class="shopcart d-lg-none" href="{% url 'users:profile' request.user.id %}">
+                            <i class="flaticon-car"></i>
+                            <span class="cart-count">{{ car_count }}</span>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'account_login' %}" class="compare-btn d-lg-none"><i class="flaticon-compare"></i><span class="cart-count">۱۰</span></a>
+                        <a class="shopcart d-lg-none" href="{% url 'account_login' %}">
+                            <i class="flaticon-car"></i>
+                            <span class="cart-count">{{ car_count }}</span>
+                        </a>
+                    {% endif %}
                     <button class="sidebar-btn  d-lg-none"><i class="flaticon-search"></i></button>
                     <div class="mobile-menu d-lg-none">
                         <a href="javascript:void(0)"><i class="ri-menu-line"></i></a>

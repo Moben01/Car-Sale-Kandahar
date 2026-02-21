@@ -49,3 +49,8 @@ def about_us(request):
     about_us = AboutUs.objects.last()
     messages = CustomerMessage.objects.filter(is_read=True)
     return render(request, 'home/about-us.html', {'about_us':about_us, 'messages':messages})
+
+
+def policy(request):
+    policies = ListingPolicy.objects.filter(is_active=True)
+    return render(request, 'home/policy.html', {'policies': policies})

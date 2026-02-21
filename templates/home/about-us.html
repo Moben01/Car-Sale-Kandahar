@@ -3,18 +3,24 @@
 {% block content %}
 
 <!-- Breadcrumb Start -->
-<div class="breadcrumb-wrap bg-f br-1">
+<div class="breadcrumb-wrap br-10 bg-f">
     <div class="container">
-        <div class="breadcrumb-title">
-            <h2>درباره ما</h2>
-            <ul class="breadcrumb-menu list-style">
-                <li><a href="/">داشبورد </a></li>
-                <li>درباره ما</li>
-            </ul>
+        <div class="col-xl-8 col-lg-7 col-md-7">
+            <div class="cta-content">
+                <div class="section-title-two" style="font-family: 'Vazirmatn', sans-serif;">
+                    <h2 class="text-white">
+                        موتر فروشی کندهار — <span>شریک مطمئن شما در انتخاب بهترین موتر</span>
+                    </h2>
+                    <p class="text-white">
+                        ما در موتر فروشی کندهار با ارائه موترهای باکیفیت، قیمت مناسب و خدمات صادقانه،
+                        همواره در کنار شما هستیم. هدف ما ایجاد اعتماد، رضایت و تجربه‌ای عالی برای شما و خانواده‌تان است.
+                        با ما، انتخاب موتر آسان، مطمئن و لذت‌بخش خواهد بود.
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-<!-- Breadcrumb End -->
 
 <!-- About Section Start -->
 <section class="about-wrap ptb-100 bg_ash" style="font-family: 'Vazirmatn', sans-serif;">
@@ -35,57 +41,197 @@
                         <span>{{ about_us.title }}</span>
                         <h2>{{ about_us.subtitle }}.</p>
                     </div>
+                    <p> {{ about_us.description }} </p>
                     <div class="progressbar-wrap">
-                    <div class="progress-bar" data-percentage="85%">
-                        <h4 class="progress-title-holder clearfix">
-                            <span class="progress-title">امنیت بالا</span>
-                            <span class="progress-number-wrapper">
-                                <span class="progress-number-mark">
-                                    <span class="percent"></span>
+                        <div class="progress-bar" data-percentage="85%">
+                            <h4 class="progress-title-holder clearfix">
+                                <span class="progress-title">امنیت بالا</span>
+                                <span class="progress-number-wrapper">
+                                    <span class="progress-number-mark">
+                                        <span class="percent"></span>
+                                    </span>
                                 </span>
-                            </span>
-                        </h4>
-                        <div class="progress-content-outter">
-                            <div class="progress-content"></div>
+                            </h4>
+                            <div class="progress-content-outter">
+                                <div class="progress-content"></div>
+                            </div>
+                        </div>
+
+                        <div class="progress-bar" data-percentage="72%">
+                            <h4 class="progress-title-holder clearfix">
+                                <span class="progress-title">نمایندگان مورد اعتماد</span>
+                                <span class="progress-number-wrapper">
+                                    <span class="progress-number-mark">
+                                        <span class="percent"></span>
+                                    </span>
+                                </span>
+                            </h4>
+                            <div class="progress-content-outter">
+                                <div class="progress-content"></div>
+                            </div>
+                        </div>
+
+                        <div class="progress-bar" data-percentage="80%">
+                            <h4 class="progress-title-holder clearfix">
+                                <span class="progress-title">پشتیبانی رایگان</span>
+                                <span class="progress-number-wrapper">
+                                    <span class="progress-number-mark">
+                                        <span class="percent"></span>
+                                    </span>
+                                </span>
+                            </h4>
+                            <div class="progress-content-outter">
+                                <div class="progress-content"></div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="progress-bar" data-percentage="72%">
-                        <h4 class="progress-title-holder clearfix">
-                            <span class="progress-title">نمایندگان مورد اعتماد</span>
-                            <span class="progress-number-wrapper">
-                                <span class="progress-number-mark">
-                                    <span class="percent"></span>
-                                </span>
-                            </span>
-                        </h4>
-                        <div class="progress-content-outter">
-                            <div class="progress-content"></div>
-                        </div>
-                    </div>
-
-                    <div class="progress-bar" data-percentage="80%">
-                        <h4 class="progress-title-holder clearfix">
-                            <span class="progress-title">پشتیبانی رایگان</span>
-                            <span class="progress-number-wrapper">
-                                <span class="progress-number-mark">
-                                    <span class="percent"></span>
-                                </span>
-                            </span>
-                        </h4>
-                        <div class="progress-content-outter">
-                            <div class="progress-content"></div>
-                        </div>
-                    </div>
-                </div>
-
-                    <a href="about.html" class="btn-two">بیشتر بدانید</a>
                 </div>
             </div>
         </div>
     </div>
 </section>
 <!-- About Section End -->
+
+<div class="policy-section pt-100 pb-70" style="font-family: 'Vazirmatn', sans-serif;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <!-- Mission and Vision Side by Side -->
+                <div class="row">
+                    <!-- Mission Card -->
+                    <div class="col-md-6 mb-4">
+                        <div class="policy-item card border-0 shadow-sm h-100">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-start">
+                                    <div class="policy-icon me-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="#fd0d0d" viewBox="0 0 24 24">
+                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="policy-content flex-grow-1">
+                                        <h4 class="mb-3">ماموریت ما</h4>
+                                        <p class="text-muted mb-0">{{ about_us.mission|default:"ارائه بهترین خدمات و محصولات با کیفیت به مشتریان عزیز"|linebreaks }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vision Card -->
+                    <div class="col-md-6 mb-4">
+                        <div class="policy-item card border-0 shadow-sm h-100">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-start">
+                                    <div class="policy-icon me-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="#fd0d0d" viewBox="0 0 24 24">
+                                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="policy-content flex-grow-1">
+                                        <h4 class="mb-3">چشم‌انداز ما</h4>
+                                        <p class="text-muted mb-0">{{ about_us.vision|default:"تبدیل شدن به برترین و معتبرترین فروشگاه موتر در منطقه"|linebreaks }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Values Card (Full Width Below) -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="policy-item card border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-start">
+                                    <div class="policy-icon me-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="#fd0d0d" viewBox="0 0 24 24">
+                                            <path d="M12 2L15 9H22L16 14L19 21L12 16.5L5 21L8 14L2 9H9L12 2Z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="policy-content flex-grow-1">
+                                        <h4 class="mb-3">ارزش‌های ما</h4>
+                                        <p class="text-muted mb-0">{{ about_us.values|default:"صداقت، کیفیت، اعتماد مشتری، نوآوری و مسئولیت‌پذیری"|linebreaks }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.policy-item {
+    border-radius: 15px !important;
+    transition: all 0.3s ease;
+    border-right: 4px solid #fd0d0d !important;
+    background: white;
+}
+
+.policy-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(253, 13, 13, 0.1) !important;
+}
+
+.policy-icon {
+    background: rgba(253, 13, 13, 0.1);
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.policy-item:hover .policy-icon {
+    background: #fd0d0d;
+}
+
+.policy-item:hover .policy-icon svg {
+    fill: white !important;
+}
+
+.policy-icon svg {
+    transition: all 0.3s ease;
+}
+
+.policy-content h4 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px dashed #eee;
+    padding-bottom: 10px;
+}
+
+.policy-content p {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #555;
+}
+
+@media (max-width: 768px) {
+    .policy-item .d-flex {
+        flex-direction: column;
+    }
+    
+    .policy-icon {
+        margin-bottom: 15px;
+        margin-left: 0;
+        width: 50px;
+        height: 50px;
+    }
+    
+    .policy-icon svg {
+        width: 30px;
+        height: 30px;
+    }
+}
+</style>
 
 <!-- Testimonial Section Start -->
 <div class="testimonial-wrap ptb-100 bg_ash" style="font-family: 'Vazirmatn', sans-serif;">
@@ -95,25 +241,26 @@
         </div>
         <div class="testimonial-slider-three owl-carousel">
             {% for message in messages %}
-                <div class="testimonial-card-three">
-                    <div class="client-info-wrap">
-                        <div class="client-img">
-                            <img src="https://img.freepik.com/premium-vector/user-profile-icon-flat-style-member-avatar-vector-illustration-isolated-background-human-permission-sign-business-concept_157943-15752.jpg?semt=ais_user_personalization&w=740&q=80" alt="Image">
-                        </div>
-                        <div class="client-info">
-                            <h3>{{ message.name }}</h3>
-                            <span>{{ message.subject }}</span>
-                        </div>
+            <div class="testimonial-card-three">
+                <div class="client-info-wrap">
+                    <div class="client-img">
+                        <img src="https://img.freepik.com/premium-vector/user-profile-icon-flat-style-member-avatar-vector-illustration-isolated-background-human-permission-sign-business-concept_157943-15752.jpg?semt=ais_user_personalization&w=740&q=80"
+                            alt="Image">
                     </div>
-                    <p class="client-quote"> {{ message.message }} </p>
-                    <ul class="ratings list-style">
-                        <li><i class="ri-star-fill"></i></li>
-                        <li><i class="ri-star-fill"></i></li>
-                        <li><i class="ri-star-fill"></i></li>
-                        <li><i class="ri-star-fill"></i></li>
-                        <li><i class="ri-star-fill"></i></li>
-                    </ul>
+                    <div class="client-info">
+                        <h3>{{ message.name }}</h3>
+                        <span>{{ message.subject }}</span>
+                    </div>
                 </div>
+                <p class="client-quote"> {{ message.message }} </p>
+                <ul class="ratings list-style">
+                    <li><i class="ri-star-fill"></i></li>
+                    <li><i class="ri-star-fill"></i></li>
+                    <li><i class="ri-star-fill"></i></li>
+                    <li><i class="ri-star-fill"></i></li>
+                    <li><i class="ri-star-fill"></i></li>
+                </ul>
+            </div>
             {% endfor %}
         </div>
     </div>

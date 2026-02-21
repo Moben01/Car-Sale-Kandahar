@@ -399,76 +399,156 @@
                             </ul>
                         </div>
 
-                        <!-- Sign Up Form -->
-                        {% if not SOCIALACCOUNT_ONLY %}
-                        {% url 'account_signup' as action_url %}
-                        <form method="post" action="{{ action_url }}" class="signup-form">
+
+
+                        <form method="post" class="signup-form" action="{% url 'users:signup' %}">
                             {% csrf_token %}
-
-                            {% for field in form %}
-                            <div class="form-group mb-3">
-                                {{ field }}
-
-                                {% if field.errors %}
-                                {% for error in field.errors %}
-                                <small class="text-danger">
-                                    {% if "too short" in error|lower or "at least 8 characters" in error|lower %}
-                                    ⚠️ رمز عبور حداقل ۸ کاراکتر نیاز دارد
-                                    {% elif "too common" in error|lower %}
-                                    ⚠️ رمز عبور خیلی ساده است (مثل 12345678)
-                                    {% elif "entirely numeric" in error|lower %}
-                                    ⚠️ رمز عبور نمی‌تواند فقط عدد باشد
-                                    {% elif "too similar" in error|lower %}
-                                    ⚠️ رمز عبور شبیه نام یا ایمیل شماست
-                                    {% elif "password" in error|lower and "match" in error|lower %}
-                                    ⚠️ رمز عبور و تکرار آن یکسان نیست
-                                    {% elif "this field is required" in error|lower %}
-                                    ⚠️ این فیلد الزامی است
-                                    {% elif "valid email" in error|lower %}
-                                    ⚠️ ایمیل معتبر وارد کنید
-                                    {% elif "already exists" in error|lower or "already taken" in error|lower %}
-                                    ⚠️ این ایمیل قبلاً ثبت شده است
-                                    {% else %}
-                                    ⚠️ {{ error }}
-                                    {% endif %}
-                                </small>
-                                {% endfor %}
-                                {% endif %}
-
-                                {% if field.help_text %}
-                                <small class="form-text text-muted">
-                                    {% if "password" in field.name %}
-                                    🔑 رمز عبور قوی انتخاب کنید
-                                    {% else %}
-                                    {{ field.help_text|safe }}
-                                    {% endif %}
-                                </small>
-                                {% endif %}
-                            </div>
-                            {% endfor %}
-
-                            {{ redirect_field }}
-
-                            <button type="submit" class="btn-gold w-100 py-3 mb-3">
-                                عضویت
+                            <input type="text" name="username" placeholder="نام کاربری">
+                            <input type="text" name="phone_number" placeholder="شماره تماس">
+                            <input type="password" name="password1" placeholder="رمز عبور">
+                            <input type="password" name="password2" placeholder="تکرار رمز">
+                            <button type="submit" class="btn-gold w-100 py-2 mb-4 mt-2" style="font-size: 16px;">
+                                ورود
                             </button>
+
+                            <style>
+                                .btn-gold {
+                                    position: relative;
+                                    padding: 8px 20px !important;
+                                    /* Smaller padding */
+                                    font-size: 16px !important;
+                                    /* Smaller font */
+                                    font-weight: 600;
+                                    color: white;
+                                    background: linear-gradient(270deg,
+                                            #fd0d0d,
+                                            /* Red */
+                                            #ff6b6b,
+                                            /* Light Red */
+                                            #ffd700,
+                                            /* Gold */
+                                            #4a90e2,
+                                            /* Blue */
+                                            #50c878,
+                                            /* Green */
+                                            #fd0d0d
+                                            /* Back to Red */
+                                        );
+                                    background-size: 500% 100%;
+                                    /* For 5 colors */
+                                    border: none;
+                                    border-radius: 50px;
+                                    cursor: pointer;
+                                    animation: colorChange 5s ease infinite;
+                                    /* 5 seconds for 5 colors */
+                                    box-shadow: 0 4px 12px rgba(253, 13, 13, 0.2);
+                                    letter-spacing: 0.5px;
+                                    transition: all 0.3s ease;
+                                    border: 1px solid transparent;
+                                }
+
+                                /* 5-color animation */
+                                @keyframes colorChange {
+                                    0% {
+                                        background-position: 0% 50%;
+                                    }
+
+                                    20% {
+                                        background-position: 25% 50%;
+                                        /* First color transition */
+                                    }
+
+                                    40% {
+                                        background-position: 50% 50%;
+                                        /* Second color transition */
+                                    }
+
+                                    60% {
+                                        background-position: 75% 50%;
+                                        /* Third color transition */
+                                    }
+
+                                    80% {
+                                        background-position: 100% 50%;
+                                        /* Fourth color transition */
+                                    }
+
+                                    100% {
+                                        background-position: 0% 50%;
+                                        /* Back to first color */
+                                    }
+                                }
+
+                                /* Shine effect */
+                                .btn-gold::before {
+                                    content: '';
+                                    position: absolute;
+                                    top: 0;
+                                    left: -100%;
+                                    width: 100%;
+                                    height: 100%;
+                                    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+                                    transition: left 0.5s ease;
+                                    animation: shine 3s ease-in-out infinite;
+                                }
+
+                                @keyframes shine {
+                                    0% {
+                                        left: -100%;
+                                        opacity: 0;
+                                    }
+
+                                    50% {
+                                        opacity: 0.7;
+                                    }
+
+                                    100% {
+                                        left: 200%;
+                                        opacity: 0;
+                                    }
+                                }
+
+                                /* Hover effect */
+                                .btn-gold:hover {
+                                    transform: translateY(-2px) scale(1.01);
+                                    background: #dc3545;
+                                    /* Danger color on hover */
+                                    box-shadow: 0 6px 18px rgba(220, 53, 69, 0.4);
+                                    animation: none;
+                                    /* Stop color animation on hover */
+                                    border-color: #ffd700;
+                                    color: white;
+                                }
+
+                                .btn-gold:hover::before {
+                                    animation: shine 1.5s ease-in-out infinite;
+                                }
+
+                                /* Active effect */
+                                .btn-gold:active {
+                                    transform: translateY(1px) scale(0.98);
+                                    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+                                }
+
+                                /* Focus state */
+                                .btn-gold:focus {
+                                    outline: none;
+                                    box-shadow: 0 0 0 3px rgba(253, 13, 13, 0.2);
+                                }
+
+                                /* Responsive */
+                                @media (max-width: 768px) {
+                                    .btn-gold {
+                                        font-size: 14px !important;
+                                        padding: 6px 15px !important;
+                                    }
+                                }
+                            </style>
                         </form>
-                        {% endif %}
-
-                        {% if PASSKEY_SIGNUP_ENABLED %}
-                        <div class="divider my-4">
-                            <span class="divider-text">یا</span>
-                        </div>
-
-                        <a href="{{ signup_by_passkey_url }}"
-                            class="btn-outline-gold w-100 py-3 mb-3 d-block text-center">
-                            <i class="flaticon-key"></i> ثبت نام با کلید عبور
-                        </a>
-                        {% endif %}
 
                         <div class="login-link text-center mt-4">
                             <p class="mb-0">
-                                قبلاً حساب دارید؟
+                                قبلاً اکونت دارید؟
                                 <a href="{{ login_url }}" class="link-gold">وارد شوید</a>
                             </p>
                         </div>

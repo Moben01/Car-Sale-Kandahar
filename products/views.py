@@ -2,23 +2,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import HttpResponse
 from users.models import *
+from django.http import JsonResponse, HttpResponse
 from django.db.models import Q, Case, When, Value, IntegerField
 # Create your views here.
 
+@login_required
 def add_listing(request):
-    if not request.user.is_authenticated:
-        return redirect('account_login')
-
-    if not request.user.emailaddress_set.filter(verified=True).exists():
-        return redirect('account_email_verification_sent')
-    
-    user_phone_number = UserPhone.objects.filter(user=request.user).last()
-    
-    if not user_phone_number.phone_number:  
-        messages.warning(request, "لطفاً شماره تماس خود را تکمیل کنید.")
-        return redirect('users:my_account', id=request.user.id) 
     
     if request.method == 'POST':
         # Get main car fields
@@ -223,24 +213,40 @@ def shop(request):
 @login_required
 def toggle_wishlist(request, car_id):
     car = get_object_or_404(NewCar, id=car_id)
-
+    
+    # Check if it's an AJAX request
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+    
     wishlist_item, created = Wishlist.objects.get_or_create(
         user=request.user,
         car=car
     )
-
+    
     if created:
         wishlist_item.is_active = True
         wishlist_item.save()
-        messages.success(request, f'موتر "{car.title}" به علاقمندی‌ها اضافه شد.')
+        message = f'موتر "{car.title}" به علاقمندی‌ها اضافه شد.'
+        is_active = True
     else:
         wishlist_item.is_active = not wishlist_item.is_active
         wishlist_item.save()
         if wishlist_item.is_active:
-            messages.success(request, f'موتر "{car.title}" دوباره به علاقمندی‌ها اضافه شد.')
+            message = f'موتر "{car.title}" دوباره به علاقمندی‌ها اضافه شد.'
         else:
-            messages.warning(request, f'موتر "{car.title}" از علاقمندی‌ها حذف شد.')
-
+            message = f'موتر "{car.title}" از علاقمندی‌ها حذف شد.'
+        is_active = wishlist_item.is_active
+    
+    # For AJAX requests, return JSON
+    if is_ajax:
+        return JsonResponse({
+            'success': True,
+            'is_active': is_active,
+            'message': message,
+            'car_id': car_id
+        })
+    
+    # For regular requests, redirect as before
+    messages.success(request, message) if is_active else messages.warning(request, message)
     return redirect(request.META.get('HTTP_REFERER', 'home:dashboard'))
 
 

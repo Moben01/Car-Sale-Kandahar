@@ -77,27 +77,136 @@
                                     جزئیات
                                 </a>
 
-                                <a href="{% url 'products:toggle_wishlist' car.id %}" class="wishlist-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="heart-icon">
-    {% if car.id in wishlist_car_ids %}
-    <!-- فعال: قلب قرمز -->
-    <path fill="#fd0d0d" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.27 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.08C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.77-3.4 6.86-8.55 11.53z"/>
-    {% else %}
-    <!-- غیرفعال: قلب مشکی -->
-    <path fill="#000000" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.27 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.08C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.77-3.4 6.86-8.55 11.53z"/>
-    {% endif %}
-</svg>
-<style>.heart-icon {
-    width: 30px;
-    height: 30px;
-    transition: transform 0.2s;
-}
-
-.heart-icon:hover {
-    transform: scale(1.2);
-}
-</style>
+                                <a href="{% url 'products:toggle_wishlist' car.id %}" class="wishlist-icon" data-car-id="{{ car.id }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="heart-icon {% if car.id in wishlist_car_ids %}active{% endif %}">
+                                        <path fill="{% if car.id in wishlist_car_ids %}#fd0d0d{% else %}#000000{% endif %}" 
+                                            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.27 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.08C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.77-3.4 6.86-8.55 11.53z"/>
+                                    </svg>
+                                    <div class="spinner" style="display: none;"></div>
                                 </a>
+
+                                <style>
+                                .heart-icon {
+                                    width: 30px;
+                                    height: 30px;
+                                    transition: transform 0.2s;
+                                }
+
+                                .heart-icon:hover {
+                                    transform: scale(1.2);
+                                }
+
+                                .wishlist-icon {
+                                    position: relative;
+                                    display: inline-flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                }
+
+                                .spinner {
+                                    width: 30px;
+                                    height: 30px;
+                                    border: 3px solid #f3f3f3;
+                                    border-top: 3px solid #fd0d0d;
+                                    border-radius: 50%;
+                                    animation: spin 1s linear infinite;
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                }
+
+                                @keyframes spin {
+                                    0% { transform: rotate(0deg); }
+                                    100% { transform: rotate(360deg); }
+                                }
+
+                                .wishlist-icon.loading .heart-icon {
+                                    opacity: 0.3;
+                                }
+
+                                .wishlist-icon.loading .spinner {
+                                    display: block !important;
+                                }
+                                </style>
+
+                                <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    const wishlistButtons = document.querySelectorAll('.wishlist-icon');
+                                    
+                                    wishlistButtons.forEach(button => {
+                                        button.addEventListener('click', function(e) {
+                                            e.preventDefault(); // Prevent default link behavior
+                                            
+                                            const url = this.getAttribute('href');
+                                            const carId = this.getAttribute('data-car-id');
+                                            const heartIcon = this.querySelector('.heart-icon');
+                                            const path = heartIcon.querySelector('path');
+                                            
+                                            // Don't do anything if already loading
+                                            if (this.classList.contains('loading')) {
+                                                return;
+                                            }
+                                            
+                                            // Add loading state
+                                            this.classList.add('loading');
+                                            
+                                            // Make AJAX request
+                                            fetch(url, {
+                                                method: 'POST',
+                                                headers: {
+                                                    'X-Requested-With': 'XMLHttpRequest',
+                                                    'X-CSRFToken': getCookie('csrftoken'),
+                                                    'Content-Type': 'application/json'
+                                                },
+                                                credentials: 'same-origin'
+                                            })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                if (data.success) {
+                                                    // Toggle heart color
+                                                    if (data.is_active) {
+                                                        path.setAttribute('fill', '#fd0d0d');
+                                                        heartIcon.classList.add('active');
+                                                    } else {
+                                                        path.setAttribute('fill', '#000000');
+                                                        heartIcon.classList.remove('active');
+                                                    }
+                                                    
+                                                    // Show message if needed (optional)
+                                                    if (data.message) {
+                                                        // You can show a toast notification here
+                                                        console.log(data.message);
+                                                    }
+                                                }
+                                            })
+                                            .catch(error => {
+                                                console.error('Error:', error);
+                                                // Optional: Show error message to user
+                                            })
+                                            .finally(() => {
+                                                // Remove loading state
+                                                this.classList.remove('loading');
+                                            });
+                                        });
+                                    });
+                                });
+
+                                // Helper function to get CSRF token
+                                function getCookie(name) {
+                                    let cookieValue = null;
+                                    if (document.cookie && document.cookie !== '') {
+                                        const cookies = document.cookie.split(';');
+                                        for (let i = 0; i < cookies.length; i++) {
+                                            const cookie = cookies[i].trim();
+                                            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    return cookieValue;
+                                }
+                                </script>
                             </div>
 
                             <style>
