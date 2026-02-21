@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from .forms import *
+from django.contrib.auth import authenticate, update_session_auth_hash
 from .models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -87,8 +88,61 @@ def login_view(request):
     return render(request, "account/login.html")
 
 
+@login_required
+def edit_profile_view(request):
+    if request.method == "POST":
+        user = request.user
+        current_password = request.POST.get('current_password')
+        
+        # Verify current password
+        if not user.check_password(current_password):
+            messages.error(request, "رمز عبور فعلی اشتباه است")
+            return redirect('account:profile')
+        
+        # Update username if provided and changed
+        new_username = request.POST.get('username')
+        if new_username and new_username != user.username:
+            if CustomUser.objects.filter(username=new_username).exclude(id=user.id).exists():
+                messages.error(request, "این نام کاربری قبلاً استفاده شده است")
+                return redirect('account:profile')
+            user.username = new_username
+        
+        # Update phone number if provided and changed
+        new_phone = request.POST.get('phone_number')
+        if new_phone and new_phone != user.phone_number:
+            if CustomUser.objects.filter(phone_number=new_phone).exclude(id=user.id).exists():
+                messages.error(request, "این شماره تماس قبلاً ثبت شده است")
+                return redirect('account:profile')
+            user.phone_number = new_phone
+        
+        # Update password if provided
+        new_password1 = request.POST.get('new_password1')
+        new_password2 = request.POST.get('new_password2')
+        
+        if new_password1 or new_password2:
+            if new_password1 != new_password2:
+                messages.error(request, "رمز عبور جدید و تکرار آن مطابقت ندارند")
+                return redirect('account:profile')
+            if len(new_password1) < 8:
+                messages.error(request, "رمز عبور باید حداقل ۸ کاراکتر باشد")
+                return redirect('account:profile')
+            user.set_password(new_password1)
+        
+        # Save changes
+        user.save()
+        
+        # Update session if password was changed
+        if new_password1:
+            update_session_auth_hash(request, user)
+        
+        messages.success(request, "اطلاعات حساب کاربری با موفقیت به‌روزرسانی شد")
+        return redirect('account:profile')
+    
+    return redirect('account:profile')
+
+
 def profile(request, id):
-    user = User.objects.get(id=id)
+    user = CustomUser.objects.get(id=id)
     products = NewCar.objects.filter(user=user)
 
     context = {
@@ -102,26 +156,8 @@ def profile(request, id):
 def my_account(request, id):
     user = request.user  # always current user
 
-    phone_obj, created = UserPhone.objects.get_or_create(user=user)
-
-    if request.method == "POST":
-        phone_number = request.POST.get('phone_number')
-
-        if phone_number:
-            # simple validation (11 digits example)
-            if not phone_number.isdigit() or len(phone_number) < 9:
-                messages.error(request, "شماره تماس معتبر نیست.")
-            else:
-                phone_obj.phone_number = phone_number
-                phone_obj.save()
-                messages.success(request, "شماره تماس شما با موفقیت ذخیره شد ✅")
-
-        else:
-            messages.warning(request, "لطفاً شماره تماس را وارد نمایید.")
-
-        return redirect('users:my_account', id=user.id)
 
     context = {
-        'phone': phone_obj,
+        # 'phone': phone_obj,
     }
     return render(request, 'users/my-account.html', context)

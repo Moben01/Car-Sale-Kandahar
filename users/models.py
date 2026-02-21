@@ -2,18 +2,6 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 
-
-class UserPhone(models.Model):
-    user = models.ForeignKey(
-    settings.AUTH_USER_MODEL,
-    on_delete=models.CASCADE
-    )
-    phone_number = models.IntegerField(max_length=10)
-
-    def __str__(self):
-        return f"{self.user.username} - {self.phone_number}"
-
-
 # ✅ اول Manager
 class CustomUserManager(BaseUserManager):
     def create_user(self, username, phone_number, password=None, **extra_fields):

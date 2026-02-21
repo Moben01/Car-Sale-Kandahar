@@ -13,5 +13,6 @@ urlpatterns = [
     path('my_account/<int:id>/', views.my_account, name="my_account"),
     path("signup/", signup_view, name="signup"),
     path("login/", login_view, name="login"),
+    path('profile/edit/', views.edit_profile_view, name='edit_profile'),
 ]
 

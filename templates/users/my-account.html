@@ -25,7 +25,6 @@
 {% endif %}
 
 <style>
-
     /* Messages Styles */
     .messages-wrapper {
         position: fixed;
@@ -57,6 +56,7 @@
             transform: translateY(-20px);
             opacity: 0;
         }
+
         to {
             transform: translateY(0);
             opacity: 1;
@@ -130,8 +130,15 @@
 
     /* Auto dismiss animation */
     @keyframes fadeOut {
-        from { opacity: 1; transform: translateY(0); }
-        to { opacity: 0; transform: translateY(-10px); }
+        from {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        to {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
     }
 
     .message-box.fade-out {
@@ -230,13 +237,16 @@
         .done-content {
             padding: 30px 20px;
         }
+
         h2 {
             font-size: 24px;
         }
+
         .messages-wrapper {
             top: 10px;
             width: 95%;
         }
+
         .message-box {
             padding: 12px 16px;
         }
@@ -245,20 +255,20 @@
 
 <!-- Optional: Auto-dismiss messages after 5 seconds -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Auto dismiss messages after 5 seconds
-    const messages = document.querySelectorAll('.message-box');
-    messages.forEach(function(message) {
-        setTimeout(function() {
-            message.classList.add('fade-out');
-            setTimeout(function() {
-                if (message.parentElement) {
-                    message.remove();
-                }
-            }, 300);
-        }, 5000);
+    document.addEventListener('DOMContentLoaded', function () {
+        // Auto dismiss messages after 5 seconds
+        const messages = document.querySelectorAll('.message-box');
+        messages.forEach(function (message) {
+            setTimeout(function () {
+                message.classList.add('fade-out');
+                setTimeout(function () {
+                    if (message.parentElement) {
+                        message.remove();
+                    }
+                }, 300);
+            }, 5000);
+        });
     });
-});
 </script>
 
 <!-- Breadcrumb Start -->
@@ -275,9 +285,9 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 <!-- Breadcrumb End -->
 
-
 <div class="account-container">
     <div class="account-header text-center mb-4">
+        <h2>حساب کاربری</h2>
         <p>مشاهده و مدیریت اطلاعات حساب کاربری</p>
     </div>
 
@@ -300,111 +310,177 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="info-card">
                 <div class="info-card-body">
                     <div class="info-icon">
-                        <i class="fas fa-envelope"></i>
+                        <i class="fas fa-phone"></i>
                     </div>
                     <div class="info-content">
-                        <span>ایمیل</span>
-                        <h4>{{ request.user.email }}</h4>
-
-                        {% if request.user.emailaddress_set.all|length > 0 %}
-                        {% for ea in request.user.emailaddress_set.all %}
-                        {% if ea.verified %}
-                        <span class="badge-verified">تایید شده</span>
-                        {% else %}
-                        <a href="{% url 'account_email' %}" class="badge-unverified">تایید نشده</a>
-                        {% endif %}
-                        {% endfor %}
-                        {% else %}
-                        <a href="{% url 'account_email' %}" class="badge-warning">ایمیل ثبت نشده</a>
-                        {% endif %}
+                        <span>شماره تماس</span>
+                        <h4 dir="ltr">{{ request.user.phone_number }}</h4>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Phone Numbers Section -->
+    <!-- Edit Profile Section -->
     <div class="section-card mb-4">
         <div class="section-header">
-            <i class="fas fa-phone-alt"></i>
-            <h3>شماره تماس</h3>
+            <i class="fas fa-edit"></i>
+            <h3>ویرایش اطلاعات</h3>
         </div>
 
-        <div class="section-body">
-            {% if phone.phone_number %}
-            <div class="phone-item">
-                <div class="phone-number">
-                    <i class="fas fa-mobile-alt"></i>
-                    <span>{{ phone.phone_number }}</span>
-                </div>
-                <button class="btn-edit" onclick="document.getElementById('edit-form').classList.toggle('d-none')">
-                    <i class="fas fa-edit"></i> تغییر
-                </button>
-            </div>
-            {% endif %}
+        <!-- Edit Button -->
+        <button id="showEditFormBtn" class="btn-gold w-100 py-2 mb-3" onclick="showEditForm()">
+            <i class="fas fa-pen"></i> تغییرات
+        </button>
 
-            <!-- Edit/Add Form -->
-            <div id="edit-form" class="edit-form {% if phone.phone_number %}d-none{% endif %}">
-                <form method="POST" action="{% url 'users:my_account' request.user.id %}">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <label>شماره تماس جدید</label>
-                        <input type="text" name="phone_number" value="{{ phone.phone_number }}"
-                            placeholder="مثال: 09123456789" required maxlength="11">
+        <!-- Edit Form (Hidden by default) -->
+        <div id="editFormContainer" class="edit-form" style="display: none;">
+            <form method="post" action="{% url 'users:edit_profile' %}">
+                {% csrf_token %}
 
-                        <!-- 🔔 Important Note -->
-                        <small class="text-muted" style="display:block; margin-top:8px; line-height:1.8;">
-                            لطفاً شماره تماس صحیح و فعال خود را وارد نمایید. 
-                            ما ممکن است جهت تایید آگهی یا هماهنگی‌های ضروری با شما تماس بگیریم.
-                        </small>
+                <!-- Username field -->
+                <div class="form-group">
+                    <label for="edit_username">نام کاربری جدید</label>
+                    <div class="input-icon-wrapper">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" name="username" id="edit_username" placeholder="نام کاربری جدید"
+                            value="{{ request.user.username }}">
                     </div>
+                </div>
+
+                <!-- Phone number field -->
+                <div class="form-group">
+                    <label for="edit_phone">شماره تماس جدید</label>
+                    <div class="input-icon-wrapper">
+                        <i class="fas fa-phone input-icon"></i>
+                        <input type="text" name="phone_number" id="edit_phone" placeholder="شماره تماس جدید"
+                            value="{{ request.user.phone_number }}" dir="ltr">
+                    </div>
+                </div>
+
+                <!-- Current password field (required for changes) -->
+                <div class="form-group">
+                    <label for="current_password">رمز عبور فعلی <span class="required-star">*</span></label>
+                    <div class="input-icon-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" name="current_password" id="current_password" placeholder="رمز عبور فعلی"
+                            required>
+                    </div>
+                </div>
+
+                <!-- New password field (optional) -->
+                <div class="form-group">
+                    <label for="new_password1">رمز عبور جدید (اختیاری)</label>
+                    <div class="input-icon-wrapper">
+                        <i class="fas fa-key input-icon"></i>
+                        <input type="password" name="new_password1" id="new_password1" placeholder="رمز عبور جدید">
+                    </div>
+                </div>
+
+                <!-- Confirm new password -->
+                <div class="form-group">
+                    <label for="new_password2">تکرار رمز جدید</label>
+                    <div class="input-icon-wrapper">
+                        <i class="fas fa-key input-icon"></i>
+                        <input type="password" name="new_password2" id="new_password2" placeholder="تکرار رمز جدید">
+                    </div>
+                </div>
+
+                <div class="form-actions">
                     <button type="submit" class="btn-save">
-                        <i class="fas fa-check"></i> ذخیره
+                        <i class="fas fa-save"></i> ذخیره تغییرات
                     </button>
-                </form>
-            </div>
+                    <button type="button" class="btn-cancel" onclick="hideEditForm()">
+                        <i class="fas fa-times"></i> انصراف
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
-
+    
     <!-- Action Links -->
     <div class="action-links">
-        <a href="{% url 'account_change_password' %}" class="action-link">
-            <i class="fas fa-key"></i>
-            تغییر رمز عبور
+        <a href="{% url 'home:dashboard' %}" class="action-link">
+            <i class="fas fa-home"></i>
+            بازگشت به داشبورد
         </a>
-        <a href="{% url 'account_email' %}" class="action-link">
-            <i class="fas fa-envelope"></i>
-            مدیریت ایمیل‌ها
+        <a href="{% url 'account_logout' %}" class="action-link">
+            <i class="fas fa-sign-out-alt"></i>
+            خروج از حساب
         </a>
     </div>
 </div>
 
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <i class="fas fa-exclamation-triangle" style="color: #dc3545; font-size: 24px;"></i>
+            <h3>تأیید حذف حساب</h3>
+        </div>
+        <div class="modal-body">
+            <p>آیا از حذف حساب کاربری خود اطمینان دارید؟ این عمل غیرقابل بازگشت است.</p>
+            
+            <form method="post" action="">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="delete_password">رمز عبور خود را وارد کنید:</label>
+                    <div class="input-icon-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" name="password" id="delete_password" required placeholder="رمز عبور">
+                    </div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="submit" class="btn-delete-confirm">
+                        <i class="fas fa-trash"></i> بله، حذف کن
+                    </button>
+                    <button type="button" class="btn-cancel" onclick="hideDeleteModal()">
+                        <i class="fas fa-times"></i> انصراف
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <style>
-    /* Simple clean styles */
+    /* Base Styles */
     .account-container {
         max-width: 800px;
         margin: 30px auto;
         padding: 20px;
-        font-family: 'Vazirmatn', sans-serif;
+        font-family: 'Vazirmatn', 'IRANSans', tahoma, sans-serif;
+        direction: rtl;
     }
 
     .account-header h2 {
-        font-size: 24px;
-        color: #333;
+        font-size: 28px;
+        color: #1e2b3a;
         margin-bottom: 5px;
+        font-weight: 600;
     }
 
     .account-header p {
-        color: #666;
-        font-size: 14px;
+        color: #6c757d;
+        font-size: 15px;
+        margin: 0;
     }
 
     /* Info Cards */
     .info-card {
-        background: #f8f9fa;
-        border-radius: 12px;
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        border-radius: 16px;
         padding: 20px;
         height: 100%;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        border: 1px solid rgba(255,255,255,0.8);
+    }
+
+    .info-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     }
 
     .info-card-body {
@@ -414,141 +490,259 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     .info-icon {
-        width: 50px;
-        height: 50px;
-        background: #e9ecef;
-        border-radius: 12px;
+        width: 55px;
+        height: 55px;
+        background: linear-gradient(135deg, #e9ecef, #dee2e6);
+        border-radius: 14px;
         display: flex;
         align-items: center;
         justify-content: center;
         color: #495057;
-        font-size: 20px;
+        font-size: 22px;
+        transition: all 0.2s ease;
+    }
+
+    .info-card:hover .info-icon {
+        background: linear-gradient(135deg, #fd0d0d, #dc3545);
+        color: white;
     }
 
     .info-content span {
         display: block;
         font-size: 13px;
-        color: #666;
-        margin-bottom: 3px;
+        color: #6c757d;
+        margin-bottom: 4px;
     }
 
     .info-content h4 {
-        font-size: 16px;
-        color: #333;
-        margin: 0 0 5px 0;
-    }
-
-    /* Badges */
-    .badge-verified {
-        background: #d4edda;
-        color: #155724;
-        padding: 3px 10px;
-        border-radius: 20px;
-        font-size: 12px;
-        display: inline-block;
-    }
-
-    .badge-unverified {
-        background: #f8d7da;
-        color: #721c24;
-        padding: 3px 10px;
-        border-radius: 20px;
-        font-size: 12px;
-        text-decoration: none;
-        display: inline-block;
-    }
-
-    .badge-warning {
-        background: #fff3cd;
-        color: #856404;
-        padding: 3px 10px;
-        border-radius: 20px;
-        font-size: 12px;
-        text-decoration: none;
-        display: inline-block;
+        font-size: 18px;
+        color: #212529;
+        margin: 0;
+        font-weight: 600;
     }
 
     /* Section Card */
     .section-card {
-        background: #f8f9fa;
-        border-radius: 12px;
-        padding: 20px;
+        background: white;
+        border-radius: 20px;
+        padding: 25px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e9ecef;
+        transition: all 0.2s ease;
+    }
+
+    .section-card:hover {
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     }
 
     .section-header {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
         margin-bottom: 20px;
         padding-bottom: 15px;
-        border-bottom: 2px solid #e9ecef;
+        border-bottom: 2px solid #f1f3f5;
     }
 
     .section-header i {
-        color: #495057;
-        font-size: 20px;
+        color: #fd0d0d;
+        font-size: 22px;
+        background: rgba(253, 13, 13, 0.1);
+        padding: 10px;
+        border-radius: 12px;
     }
 
     .section-header h3 {
-        font-size: 18px;
-        color: #333;
+        font-size: 20px;
+        color: #212529;
         margin: 0;
+        font-weight: 600;
     }
 
-    /* Phone Item */
-    .phone-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: white;
+    /* Delete Section */
+    .delete-section {
+        border: 2px solid rgba(220, 53, 69, 0.2);
+        background: rgba(220, 53, 69, 0.02);
+    }
+
+    .delete-warning {
+        color: #6c757d;
+        font-size: 14px;
+        margin-bottom: 20px;
         padding: 15px;
-        border-radius: 10px;
-        margin-bottom: 15px;
-    }
-
-    .phone-number {
+        background: rgba(220, 53, 69, 0.05);
+        border-radius: 12px;
         display: flex;
         align-items: center;
         gap: 10px;
     }
 
-    .phone-number i {
-        color: #495057;
+    .delete-warning i {
+        color: #dc3545;
         font-size: 18px;
     }
 
-    .phone-number span {
-        color: #333;
-        font-size: 15px;
-        direction: ltr;
-        display: inline-block;
-    }
-
-    .btn-edit {
-        background: none;
-        border: 1px solid #dee2e6;
-        padding: 6px 15px;
-        border-radius: 20px;
-        color: #495057;
-        font-size: 13px;
+    /* Button Styles */
+    .btn-gold {
+        position: relative;
+        padding: 12px 24px !important;
+        font-size: 16px !important;
+        font-weight: 600;
+        color: white;
+        background: linear-gradient(270deg, #fd0d0d, #ff6b6b, #ffd700, #4a90e2, #50c878, #fd0d0d);
+        background-size: 500% 100%;
+        border: none;
+        border-radius: 50px;
         cursor: pointer;
+        animation: colorChange 5s ease infinite;
+        box-shadow: 0 4px 15px rgba(253, 13, 13, 0.3);
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+    }
+
+    @keyframes colorChange {
+        0% { background-position: 0% 50%; }
+        20% { background-position: 25% 50%; }
+        40% { background-position: 50% 50%; }
+        60% { background-position: 75% 50%; }
+        80% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .btn-gold::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.5s ease;
+        animation: shine 3s ease-in-out infinite;
+        border-radius: 50px;
+    }
+
+    @keyframes shine {
+        0% { left: -100%; opacity: 0; }
+        50% { opacity: 0.7; }
+        100% { left: 200%; opacity: 0; }
+    }
+
+    .btn-gold:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
+        animation: none;
+        border-color: #ffd700;
+    }
+
+    .btn-save {
+        background: #28a745;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 12px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
         transition: all 0.2s ease;
+        flex: 1;
     }
 
-    .btn-edit:hover {
-        background: #e9ecef;
+    .btn-save:hover {
+        background: #218838;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
     }
 
-    /* Edit Form */
+    .btn-cancel {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 12px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+        flex: 1;
+    }
+
+    .btn-cancel:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+    }
+
+    .btn-delete {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+        width: 100%;
+    }
+
+    .btn-delete:hover {
+        background: #c82333;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+    }
+
+    .btn-delete-confirm {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 12px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+        flex: 1;
+    }
+
+    .btn-delete-confirm:hover {
+        background: #c82333;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+    }
+
+    /* Form Styles */
     .edit-form {
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        margin-top: 10px;
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 16px;
+        margin-top: 20px;
+        border: 1px solid #e9ecef;
     }
 
     .form-group {
-        margin-bottom: 15px;
+        margin-bottom: 20px;
     }
 
     .form-group label {
@@ -556,72 +750,181 @@ document.addEventListener('DOMContentLoaded', function() {
         font-size: 14px;
         color: #495057;
         margin-bottom: 8px;
+        font-weight: 500;
+    }
+
+    .required-star {
+        color: #dc3545;
+        margin-right: 4px;
+    }
+
+    .input-icon-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .input-icon {
+        position: absolute;
+        right: 15px;
+        color: #adb5bd;
+        font-size: 16px;
+        pointer-events: none;
     }
 
     .form-group input {
         width: 100%;
-        padding: 12px;
+        padding: 12px 15px 12px 15px;
+        padding-right: 45px;
         border: 2px solid #e9ecef;
-        border-radius: 8px;
-        font-family: 'Vazirmatn', sans-serif;
+        border-radius: 12px;
+        font-family: inherit;
         font-size: 14px;
         transition: all 0.2s ease;
+        background: white;
     }
 
     .form-group input:focus {
         outline: none;
-        border-color: #adb5bd;
+        border-color: #fd0d0d;
+        box-shadow: 0 0 0 3px rgba(253, 13, 13, 0.1);
     }
 
-    .btn-save {
-        background: #28a745;
-        color: white;
-        border: none;
-        padding: 10px 25px;
-        border-radius: 8px;
-        font-size: 14px;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        transition: all 0.2s ease;
+    .form-group input[dir="ltr"] {
+        text-align: left;
     }
 
-    .btn-save:hover {
-        background: #218838;
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 25px;
     }
 
     /* Action Links */
     .action-links {
         display: flex;
-        gap: 10px;
+        gap: 15px;
         flex-wrap: wrap;
+        margin-top: 20px;
     }
 
     .action-link {
         flex: 1;
-        background: #f8f9fa;
+        min-width: 140px;
+        background: white;
         color: #495057;
         text-decoration: none;
-        padding: 12px 20px;
-        border-radius: 10px;
+        padding: 14px 20px;
+        border-radius: 14px;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 8px;
-        font-size: 14px;
+        font-size: 15px;
+        font-weight: 500;
         transition: all 0.2s ease;
-        border: 1px solid #e9ecef;
+        border: 2px solid #e9ecef;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
     }
 
     .action-link:hover {
-        background: #e9ecef;
-        color: #333;
+        background: #fd0d0d;
+        color: white;
+        border-color: #fd0d0d;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(253, 13, 13, 0.15);
     }
 
-    /* Utility */
-    .d-none {
+    .action-link i {
+        font-size: 16px;
+    }
+
+    /* Modal Styles */
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
         display: none;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(4px);
+    }
+
+    .modal-content {
+        background: white;
+        border-radius: 24px;
+        padding: 30px;
+        max-width: 450px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        animation: modalSlideIn 0.3s ease;
+    }
+
+    @keyframes modalSlideIn {
+        from {
+            transform: translateY(-30px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .modal-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #f1f3f5;
+    }
+
+    .modal-header h3 {
+        font-size: 20px;
+        color: #212529;
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .modal-body {
+        margin-bottom: 20px;
+    }
+
+    .modal-body p {
+        color: #6c757d;
+        font-size: 15px;
+        margin-bottom: 20px;
+        line-height: 1.6;
+    }
+
+    .modal-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 25px;
+    }
+
+    /* Utility Classes */
+    .w-100 {
+        width: 100%;
+    }
+
+    .mb-4 {
+        margin-bottom: 1.5rem;
+    }
+
+    .mb-3 {
+        margin-bottom: 1rem;
+    }
+
+    .text-center {
+        text-align: center;
     }
 
     /* Responsive */
@@ -634,38 +937,71 @@ document.addEventListener('DOMContentLoaded', function() {
             flex-direction: column;
         }
 
-        .phone-item {
+        .action-link {
+            width: 100%;
+        }
+
+        .form-actions {
             flex-direction: column;
-            gap: 10px;
+        }
+
+        .btn-save, .btn-cancel, .btn-delete-confirm {
+            width: 100%;
+        }
+
+        .modal-content {
+            padding: 20px;
+            margin: 15px;
+        }
+
+        .info-card-body {
+            flex-direction: column;
             text-align: center;
         }
 
-        .btn-edit {
-            width: 100%;
+        .info-content {
+            text-align: center;
         }
     }
 </style>
 
 <script>
-    function togglePhoneForm() {
-        document.getElementById('edit-form').classList.toggle('d-none');
+    function showEditForm() {
+        document.getElementById('editFormContainer').style.display = 'block';
+        document.getElementById('showEditFormBtn').style.display = 'none';
+        // Smooth scroll to form
+        document.getElementById('editFormContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    // Get CSRF token
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
+    function hideEditForm() {
+        document.getElementById('editFormContainer').style.display = 'none';
+        document.getElementById('showEditFormBtn').style.display = 'block';
     }
+
+    function showDeleteModal() {
+        document.getElementById('deleteModal').style.display = 'flex';
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    }
+
+    function hideDeleteModal() {
+        document.getElementById('deleteModal').style.display = 'none';
+        document.body.style.overflow = ''; // Restore scrolling
+    }
+
+    // Close modal if clicked outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('deleteModal');
+        if (event.target == modal) {
+            hideDeleteModal();
+        }
+    }
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            hideDeleteModal();
+        }
+    });
 </script>
 
 <!-- Back-to-top button Start -->
