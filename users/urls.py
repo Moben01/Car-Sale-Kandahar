@@ -15,4 +15,3 @@ urlpatterns = [
     path("login/", login_view, name="login"),
     path('profile/edit/', views.edit_profile_view, name='edit_profile'),
 ]
-
